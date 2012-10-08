@@ -1,0 +1,28 @@
+{
+  "name": "GAEInteractiveConsole",
+  "description": "Makes the GAE Interactive Console more usable.",
+  "version": "1.0",
+
+  "content_scripts": [
+      {
+        "js": [
+          "jquery-latest.min.js",
+          "jqueryui/js/jquery-ui-1.8.24.custom.min.js",
+          "codemirror/lib/codemirror.js",
+          "codemirror/mode/python/python.js",
+          "content-script.js"
+        ],
+        "css": [
+          "codemirror/lib/codemirror.css",
+          "jqueryui/css/ui-lightness/jquery-ui-1.8.24.custom.css"
+        ],
+        "matches": [
+          "*://appengine.google.com/*Interactive*Console*",
+          "*://*.appspot.com/_ah/admin/interactive*"
+        ],
+        "all_frames":true
+      }
+  ],
+
+  "manifest_version": 2
+}
