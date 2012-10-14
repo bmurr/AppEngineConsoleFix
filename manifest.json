@@ -9,14 +9,19 @@
           "jquery-latest.min.js",
           "codemirror/lib/codemirror.js",
           "codemirror/mode/python/python.js",
+          "codemirror/lib/util/overlay.js",
           "content-script.js"
         ],
         "css": [
-          "codemirror/lib/codemirror.css"
+          "codemirror/lib/codemirror.css",
+          "codemirror/theme/lesser-dark.css",
+          "custom-styles.css"
         ],
         "matches": [
           "*://appengine.google.com/*Interactive*Console*",
-          "*://*.appspot.com/_ah/admin/interactive*"
+          "*://*.appspot.com/_ah/admin/interactive*",
+          "*://localhost:*/_ah/admin/interactive*"
+
         ],
         "all_frames":true
       }
