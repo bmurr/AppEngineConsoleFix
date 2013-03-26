@@ -20,8 +20,10 @@
         "matches": [
           "*://appengine.google.com/*Interactive*Console*",
           "*://*.appspot.com/_ah/admin/interactive*",
-          "*://localhost:*/_ah/admin/interactive*"
-
+          "*://localhost:*/_ah/admin/interactive*",
+          "*://appengine.google.com/*console*",
+          "*://*.appspot.com/console*",
+          "*://localhost:*/console*"
         ],
         "all_frames":true
       }

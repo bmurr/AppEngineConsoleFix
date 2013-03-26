@@ -13,6 +13,11 @@ else {
     $('#ae-content').css('padding-left', '0px');
 }
 var codearea = null;
+var inputarea = $('#code')[0];
+if (inputarea === undefined){
+    inputarea = $('#code_text')[0];
+}
+
 function editTable(){
     //Make the textareas rows instead of columns.
     $('#console tbody').prepend($('#code').parent());
@@ -27,12 +32,15 @@ function editTable(){
 
     //Remove footer
     $('#ft').remove();
+
+    //Give output box more height
+    $('#output').css('height', '1000px');
     
     //Remove padding on header
     $('#ae-content h3').css('padding', '0px');
 
     //Add checkbox toggles
-    $('<div id="controls" style="float:left"></div>').insertAfter($('#ae-content h3'));
+    $('<span id="controls"></span').insertBefore($(inputarea));
     var checkbox1 = '<span><input type="checkbox" id="wspaceBox"><label for="wspaceBox">Show whitespace</label></span>';
     //var checkbox2 = '<span><input type="checkbox" value="Car"></span>';
     $('#controls').append(checkbox1);
@@ -51,11 +59,11 @@ function editTable(){
 }
 
 function createCodeArea(){
+    //Replace textarea with codemirror editor    
+
     //Give console table a fontsize setting, because the new code area inherits fontsize settings from it
     $('#console').css('font-size', '10pt');
 
-    //Replace textarea with codemirror editor
-    var inputarea = $('#code')[0];
     var codeConfigOptions = {
         // value (string)
         "mode": "python",
@@ -74,6 +82,7 @@ function createCodeArea(){
         // lineNumberFormatter (function(integer))
         "gutter":true,
         "fixedGutter":true,
+        "flattenSpans":false,
         // readOnly (boolean)
         // onChange (function)
         // onCursorActivity (function)
@@ -98,7 +107,10 @@ function createCodeArea(){
             var ch;
             while ((ch = stream.next()) != null) {
                 if (ch == ' '){
-                    return 'tab';
+                    return 'space';
+                }
+                if (ch == '\t'){
+                    return 'ctab';
                 }
                 return null;
             }
@@ -114,3 +126,7 @@ function createCodeArea(){
 
 editTable();
 createCodeArea();
+$('document').ready(function(){
+    //Make input box auto-resize
+    $('.CodeMirror').css('height', 'auto');
+});
