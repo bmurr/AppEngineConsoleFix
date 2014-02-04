@@ -3,6 +3,7 @@ if (top === self) {
     $('.g-doc-1024').css('width','98%');
     $('#ae-content').css('height','2000px');
     $('iframe').attr('height','100%');
+    $('#ae-custom-page').css('height', '100%');
 } 
 //If we are in an iframe, (i.e page is being viewed from main GAE admin panel)
 else { 
@@ -11,6 +12,7 @@ else {
     $('#ae-content').css('margin', '0px');
     $('#ae-content').css('border-left', '0px');
     $('#ae-content').css('padding-left', '0px');
+    $('#ae-custom-page').css('height', '100%');    
 }
 var codearea = null;
 var inputarea = $('#code')[0];
