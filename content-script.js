@@ -121,6 +121,9 @@ function createCodeArea(){
       return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "python"), spaceOverlay);
     });
     codearea = CodeMirror.fromTextArea(inputarea, codeConfigOptions);
+    $('#execute_button').click(function(){
+        codearea.save();
+    })
 
     //Border around codemirror textarea
     $('.CodeMirror').css('border', '1px solid #C9C9C9');
