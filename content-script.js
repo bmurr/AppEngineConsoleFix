@@ -76,7 +76,7 @@ function createCodeArea(){
         // indentWithTabs (boolean)
         // electricChars (boolean)
         // autoClearEmptyLines (boolean)
-        // keyMap (string)
+        "keyMap": "sublime",
         // extraKeys (object)
         // lineWrapping (boolean)
         "lineNumbers":true,
@@ -85,6 +85,9 @@ function createCodeArea(){
         "gutter":true,
         "fixedGutter":true,
         "flattenSpans":false,
+        "extraKeys": {
+            "Ctrl-Space": "autocomplete"
+        },
         // readOnly (boolean)
         // onChange (function)
         // onCursorActivity (function)
@@ -102,22 +105,24 @@ function createCodeArea(){
         // onDragEvent (function)
         // onKeyEvent (function)
     }
+    CodeMirror.commands.autocomplete = function(cm) {
+        CodeMirror.showHint(cm, CodeMirror.hint.anyword);
+    }
     CodeMirror.defineMode("pythonWS", function(config, parserConfig) {
-  var spaceOverlay = {
-        token: function(stream, state) {
-            console.log(stream.string);
-            var ch;
-            while ((ch = stream.next()) != null) {
-                if (ch == ' '){
-                    return 'space';
+        var spaceOverlay = {
+            token: function(stream, state) {
+                var ch;
+                while ((ch = stream.next()) != null) {
+                    if (ch == ' '){
+                        return 'space';
+                    }
+                    if (ch == '\t'){
+                        return 'ctab';
+                    }
+                    return null;
                 }
-                if (ch == '\t'){
-                    return 'ctab';
-                }
-                return null;
             }
-        }
-      };
+        };
       return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "python"), spaceOverlay);
     });
     codearea = CodeMirror.fromTextArea(inputarea, codeConfigOptions);

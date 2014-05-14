@@ -7,14 +7,13 @@
       {
         "js": [
           "jquery-latest.min.js",
-          "codemirror/lib/codemirror.js",
-          "codemirror/mode/python/python.js",
-          "codemirror/lib/util/overlay.js",
+          "codemirror/lib/codemirror-compressed-4.1.js",
           "content-script.js"
         ],
         "css": [
           "codemirror/lib/codemirror.css",
           "codemirror/theme/lesser-dark.css",
+          "codemirror/addon/hint/show-hint.css",
           "custom-styles.css"
         ],
         "matches": [
