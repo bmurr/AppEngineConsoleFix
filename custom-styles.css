@@ -6,9 +6,10 @@
 
 .cm-space {
     background: url('data:image/gif;base64,R0lGODlhFAAMAKIAAPoAAP6fn/6xsf/i4v/l5f/19f///wAAACH5BAkAAAYALAAAAAAUAAwAAAgrAA0IHEiwoMGDCBMqXMiwoUOCAwIEGPDQgAAAAAJUvJixYsQAAiqKHFkxIAA7');
-    background-position: right;
+    background-position: 57% 46%;
     background-repeat: no-repeat;
-}...
+    opacity: 0.5;
+}
 
 
 .CodeMirror-scroll {

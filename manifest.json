@@ -1,10 +1,24 @@
 {
-  "name": "GAEInteractiveConsole",
-  "description": "Makes the GAE Interactive Console more usable.",
+  "name": "AppEngineConsoleFix",
+  "description": "Makes the AppEngine Interactive Console more usable.",
+  
+  "manifest_version": 2,
   "version": "1.0",
+  
+  "permissions": [
+    "storage"
+  ],
 
   "content_scripts": [
       {
+        "matches": [
+          "*://appengine.google.com/*Interactive*Console*",
+          "*://*.appspot.com/_ah/admin/interactive*",
+          "*://localhost:*/_ah/admin/interactive*",
+          "*://appengine.google.com/*console*",
+          "*://*.appspot.com/console*",
+          "*://localhost:*/console*"
+        ],
         "js": [
           "jquery-latest.min.js",
           "codemirror/lib/codemirror-compressed-4.1.js",
@@ -16,17 +30,8 @@
           "codemirror/addon/hint/show-hint.css",
           "custom-styles.css"
         ],
-        "matches": [
-          "*://appengine.google.com/*Interactive*Console*",
-          "*://*.appspot.com/_ah/admin/interactive*",
-          "*://localhost:*/_ah/admin/interactive*",
-          "*://appengine.google.com/*console*",
-          "*://*.appspot.com/console*",
-          "*://localhost:*/console*"
-        ],
-        "all_frames":true
+        "all_frames": true,
+        "run_at": "document_idle"
       }
-  ],
-
-  "manifest_version": 2
+  ]
 }
