@@ -1,37 +1,42 @@
 {
-  "name": "AppEngineConsoleFix",
-  "description": "Makes the AppEngine Interactive Console more usable.",
-  
-  "manifest_version": 2,
-  "version": "1.0",
-  
-  "permissions": [
-    "storage"
-  ],
+    "name": "AppEngineConsoleFix",
+    "description": "Makes the AppEngine Interactive Console more usable.",
 
-  "content_scripts": [
-      {
-        "matches": [
-          "*://appengine.google.com/*Interactive*Console*",
-          "*://*.appspot.com/_ah/admin/interactive*",
-          "*://localhost:*/_ah/admin/interactive*",
-          "*://appengine.google.com/*console*",
-          "*://*.appspot.com/console*",
-          "*://localhost:*/console*"
-        ],
-        "js": [
-          "jquery-latest.min.js",
-          "codemirror/lib/codemirror-compressed-4.1.js",
-          "content-script.js"
-        ],
-        "css": [
-          "codemirror/lib/codemirror.css",
-          "codemirror/theme/lesser-dark.css",
-          "codemirror/addon/hint/show-hint.css",
-          "custom-styles.css"
-        ],
-        "all_frames": true,
-        "run_at": "document_idle"
-      }
-  ]
+    "manifest_version": 2,
+    "version": "1.0",
+
+    "permissions": [
+        "storage"
+    ],
+
+    "content_scripts": [
+        {
+            "matches": [
+                "*://appengine.google.com/*Interactive*Console*",
+                "*://appengine.google.com/*console*",
+                "*://*.appspot.com/console*",
+                "*://*.appspot.com/_ah/admin/interactive*",
+                "*://localhost:*/console*",
+                "*://localhost:*/_ah/admin/interactive*"
+            ],
+            "js": [
+                "jquery-latest.min.js",
+                "codemirror/lib/codemirror-compressed-4.1.js",
+                "content-script.js"
+            ],
+            "css": [
+                "codemirror/lib/codemirror.css",
+                "codemirror/theme/lesser-dark.css",
+                "codemirror/addon/hint/show-hint.css",
+                "ionicons/ionicons.min.css",
+                "custom-styles.css"
+            ],
+            "all_frames": true,
+            "run_at": "document_idle"
+        }
+    ],
+
+    "web_accessible_resources": [
+        "ionicons/*"
+    ]
 }

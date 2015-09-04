@@ -1,9 +1,21 @@
-.cm-ctab {
- background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
- background-position: right;
- background-repeat: no-repeat;
+/*
+    Editor CSS
+*/
+@font-face {
+  font-family: 'Ionicons';
+  font-style: normal;
+  font-weight: normal;
+  src: url('chrome-extension://bkokbcameclldkadohjlelaabckidmbc/ionicons/ionicons.woff') format('woff');
 }
 
+/*Style how visible tabs appear.*/
+.cm-ctab {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
+/*Style how visible spaces appear.*/
 .cm-space {
     background: url('data:image/gif;base64,R0lGODlhFAAMAKIAAPoAAP6fn/6xsf/i4v/l5f/19f///wAAACH5BAkAAAYALAAAAAAUAAwAAAgrAA0IHEiwoMGDCBMqXMiwoUOCAwIEGPDQgAAAAAJUvJixYsQAAiqKHFkxIAA7');
     background-position: 57% 46%;
@@ -11,14 +23,57 @@
     opacity: 0.5;
 }
 
-
 .CodeMirror-scroll {
-  min-height: 200px;
-  height: auto;
-  overflow-y: hidden;
-  overflow-x: auto;
+    min-height: 200px;
+    height: auto;
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 .CodeMirror{
-    height:auto;
+    height: auto;
+    border: 1px solid #C9C9C9;
+}
+           
+/*Style the controls above the editor*/
+#controls{
+    padding: 6px;
+    margin-top: 8px;
+    border-top: 1px solid #C9C9C9;
+    border-left: 1px solid #C9C9C9;
+    border-right: 1px solid #C9C9C9;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    user-select: none;
+}
+
+#showHistoryButton{
+    padding-left: 10px;
+}
+
+#showWhitespaceButton{
+    padding-left: 5px;
+}
+
+#showWhitespaceButton.checked{
+    color:red;
+}
+
+/*
+    Edit existing page elements CSS
+*/
+
+/*Give console table a fontsize setting, because the new code area inherits fontsize settings from it*/
+#console{
+	font-size: 10pt
+}
+
+#submitbutton{
+    float: left;
+    height: 30px;
+}
+
+/*Remove padding on header*/
+#ae-content h3{
+	padding: 0px;
 }

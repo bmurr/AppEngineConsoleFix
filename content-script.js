@@ -3,34 +3,38 @@ if (window.AppEngineConsoleFix === undefined) {
 
         var self = this;
 
-        self.getInputArea = function() {
-            var inputarea = $('#code')[0];
-            if (inputarea === undefined) {
-                inputarea = $('#code_text')[0];
+        function betterTab(cm) {
+            if (cm.somethingSelected()) {
+                cm.indentSelection("add");
+            } else {
+                cm.replaceSelection(cm.getOption("indentWithTabs") ? "\t" :
+                    new Array(cm.getOption("indentUnit") + 1).join(" "), "end", "+input");
             }
-            return inputarea;
+        }
+
+        self.getInputArea = function () {
+            return $('#code')[0] || $('#code_text')[0];
         };
 
-        self.loadHistory = function() {
-            var url = window.location.hostname;
-            var history_key = url.indexOf('localhost') !== -1 ? 'localhost' : 'appengine';
+        self.loadHistory = function () {
             self.getHistoryUsage();
-            console_history = chrome.storage.local.get(null, function (history_object) {
+            chrome.storage.local.get(null, function (history_object) {
                 console.log(history_object);
             });
         };
 
-        self.getHistoryUsage = function() {
+        self.getHistoryUsage = function () {
             chrome.storage.local.getBytesInUse(null, function (bytesInUse) {
                 console.log(['AppEngine Console Extension is using ', bytesInUse, ' bytes of storage.'].join(''));
             });
         };
 
-        self.saveHistory = function(content) {
+        self.saveHistory = function (content) {
             var url = window.location.hostname;
             var history_key = url.indexOf('localhost') !== -1 ? 'localhost' : 'appengine';
             var timestamp = (new Date()).toISOString();
 
+            console.log(content);
 
             chrome.storage.local.get(history_key, function (item) {
 
@@ -46,7 +50,7 @@ if (window.AppEngineConsoleFix === undefined) {
                 storage_object[history_key] = history_object;
 
                 chrome.storage.local.set(storage_object);
-                chrome.storage.local.clear();
+//                chrome.storage.local.clear();
             });
         };
 
@@ -59,52 +63,42 @@ if (window.AppEngineConsoleFix === undefined) {
 
             //Move the 'Run Program' button to the top
             $('#submitbutton').closest('tr').detach().insertAfter($('#console tr:first'));
-            $('#submitbutton').css({
-                'float': 'left',
-                'height': '30px'
-            });
 
             //Remove footer
             $('#ft').remove();
 
-            //Give output box more height
+            //Give output box more room.
             $('#output').css('height', '1000px');
 
-            //Remove padding on header
-            $('#ae-content h3').css('padding', '0px');
+            //Add controls
+            var template = ['<div id="controls" style="font-size: 20px">',
+                            '    <div style="float:left"><a href="javascript:void(0)" id="showWhitespaceButton" title="Show Whitespace"><i class="ion-ios-eye-outline"></i></a></div>',
+                            '    <div><a href="javascript:void(0)" id="showHistoryButton" title="Show History"><i class="ion-clock"></i></a></div>',
+                            '</div>'];
 
-            //Add checkbox toggles
-            $('<span id="controls"></span').insertBefore($(inputarea));
-            var checkbox1 = '<span><input type="checkbox" id="wspaceBox"><label for="wspaceBox">Show whitespace</label></span>';
+            $(template.join('')).insertBefore($(inputarea));
 
-            var historyLink = '<a href="javascript:void(0)" id="historyLink"> Show History</a>';
+            $('#showWhitespaceButton').click(function () {
+                var checked = !($(this).hasClass('checked'));
 
-
-            $('#controls').append(checkbox1);
-            $('#controls').append(historyLink);
-            $('#wspaceBox').click(function () {
-                var checked = $(this).is(':checked');
                 if (checked) {
-                    console.log('checked');
                     self.codearea.setOption('mode', 'pythonWS');
+                    $(this).addClass('checked');
                 }
                 else {
-                    console.log('unchecked');
                     self.codearea.setOption('mode', 'python');
+                    $(this).removeClass('checked');
                 }
             });
 
-            $('#historyLink').click(function () {
+            $('#showHistoryButton').click(function () {
                 self.loadHistory();
             });
         };
 
         AppEngineConsoleFix.createCodeArea = function () {
             //Replace textarea with codemirror editor
-
-            //Give console table a fontsize setting, because the new code area inherits fontsize settings from it
-            $('#console').css('font-size', '10pt');
-
+        
             var inputarea = self.getInputArea();
 
             var codeConfigOptions = {
@@ -127,7 +121,8 @@ if (window.AppEngineConsoleFix === undefined) {
                 "fixedGutter": true,
                 "flattenSpans": false,
                 "extraKeys": {
-                    "Ctrl-Space": "autocomplete"
+                    "Ctrl-Space": "autocomplete",
+                    "Tab": betterTab
                 },
                 // readOnly (boolean)
                 // onChange (function)
@@ -167,37 +162,47 @@ if (window.AppEngineConsoleFix === undefined) {
                 return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "python"), spaceOverlay);
             });
 
-            console.log([inputarea, codeConfigOptions]);
-
             self.codearea = CodeMirror.fromTextArea(inputarea, codeConfigOptions);
 
             // one is for localhost, other for AppEngine console
             var submit_button = $('#execute_button') === null ? $('#submitbutton') : $('#execute_button');
+            var form = $('#submitbutton').closest('form');
 
-            submit_button.click(function () {
+            submit_button.click(function (event)
+            {
+                //Needed to prevent stale values being submitted in localhost
+                console.log('Submit button clicked');
                 self.codearea.save();
-                self.saveHistory(codearea.getValue());
+                self.saveHistory(self.codearea.getValue());
             });
 
-            //Border around codemirror textarea
-            $('.CodeMirror').css('border', '1px solid #C9C9C9');
+            form.submit(function (event) {
+                console.log('Form submitted.');
+                self.codearea.save();
+                self.saveHistory(self.codearea.getValue());
+            });
         };
 
         $('document').ready(function () {
-            //Make input box auto-resize
-            $('.CodeMirror').css('height', 'auto');
-            AppEngineConsoleFix.editTable();
-            AppEngineConsoleFix.createCodeArea();
+            //We don't want to run in the output iframe.
+            var in_localhost = (window.name === "" && $('iframe').length == 0);
+            var in_appspot_console = (window.name === "" && $('iframe[name="output"]').length != 0);
+            var in_appengine_console = (window.name === "" && $('iframe').length != 0 && $('iframe[name="output"]').length == 0);
+
+            if (window.name.indexOf('output') === -1 && !in_appengine_console){
+                AppEngineConsoleFix.editTable();
+                AppEngineConsoleFix.createCodeArea();
+            }
         });
 
-        //If we're not in an iframe (i.e page is being viewed from application admin panel)
+        //If we're not in an iframe (i.e page is being viewed from appspot console or localhost)
         if (top === self) {
             $('.g-doc-1024').css('width', '98%');
             $('#ae-content').css('height', '2000px');
             $('iframe').attr('height', '100%');
             $('#ae-custom-page').css('height', '100%');
         }
-        //If we are in an iframe, (i.e page is being viewed from main GAE admin panel)
+        //If we are in an iframe, (i.e page is being viewed from AppEngine console)
         else {
             //Remove the left hand nav bar and reset margin
             $('#ae-lhs-nav').remove();
