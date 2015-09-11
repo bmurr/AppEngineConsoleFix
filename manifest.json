@@ -3,9 +3,10 @@
     "description": "Makes the AppEngine Interactive Console more usable.",
 
     "manifest_version": 2,
-    "version": "1.0",
+    "version": "1.1.0",
 
     "permissions": [
+        "tabs",
         "storage"
     ],
 
@@ -20,15 +21,15 @@
                 "*://localhost:*/_ah/admin/interactive*"
             ],
             "js": [
-                "jquery-latest.min.js",
-                "codemirror/lib/codemirror-compressed-4.1.js",
+                "lib/jquery/jquery-2.1.4.min.js",
+                "lib/codemirror/lib/codemirror-compressed-4.1.js",
                 "content-script.js"
             ],
             "css": [
-                "codemirror/lib/codemirror.css",
-                "codemirror/theme/lesser-dark.css",
-                "codemirror/addon/hint/show-hint.css",
-                "ionicons/ionicons.min.css",
+                "lib/codemirror/lib/codemirror.css",
+                "lib/codemirror/theme/lesser-dark.css",
+                "lib/codemirror/addon/hint/show-hint.css",
+                "lib/ionicons/ionicons.min.css",
                 "custom-styles.css"
             ],
             "all_frames": true,
@@ -36,7 +37,18 @@
         }
     ],
 
+    "background":{
+        "scripts":[
+            "event-page.js"
+        ],
+        "persistent": false
+    },
+
+    "sandbox": {
+        "pages":["templates/historyPanelTemplate.html"]
+    },
+
     "web_accessible_resources": [
-        "ionicons/*"
+        "lib/ionicons/*"
     ]
 }

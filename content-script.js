@@ -1,14 +1,14 @@
 if (window.AppEngineConsoleFix === undefined) {
     (function (AppEngineConsoleFix, $, undefined) {
 
-        var self = this;
+        var self = AppEngineConsoleFix;
 
         function betterTab(cm) {
             if (cm.somethingSelected()) {
-                cm.indentSelection("add");
+                cm.indentSelection('add');
             } else {
-                cm.replaceSelection(cm.getOption("indentWithTabs") ? "\t" :
-                    new Array(cm.getOption("indentUnit") + 1).join(" "), "end", "+input");
+                cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
+                    new Array(cm.getOption('indentUnit') + 1).join(" "), 'end', '+input');
             }
         }
 
@@ -16,42 +16,51 @@ if (window.AppEngineConsoleFix === undefined) {
             return $('#code')[0] || $('#code_text')[0];
         };
 
+        self.openHistoryPanel = function(){
+            var request = {
+                action: 'openHistoryPanel'
+            };
+            chrome.runtime.sendMessage(request);
+        };
+
         self.loadHistory = function () {
             self.getHistoryUsage();
-            chrome.storage.local.get(null, function (history_object) {
+            chrome.storage.local.get('history', function (history_object) {
                 console.log(history_object);
             });
         };
 
         self.getHistoryUsage = function () {
             chrome.storage.local.getBytesInUse(null, function (bytesInUse) {
-                console.log(['AppEngine Console Extension is using ', bytesInUse, ' bytes of storage.'].join(''));
+                console.log(['AppEngine Console Extension history is using ', bytesInUse, ' bytes of storage.'].join(''));
             });
         };
 
         self.saveHistory = function (content) {
-            var url = window.location.hostname;
-            var history_key = url.indexOf('localhost') !== -1 ? 'localhost' : 'appengine';
+            var hostname = window.location.hostname;
+            var url = window.location.href;
             var timestamp = (new Date()).toISOString();
 
-            console.log(content);
+            chrome.storage.local.get('history', function (storage) {
+                var entry = {
+                    content: content,
+                    url: url,
+                    timestamp: timestamp
+                };
 
-            chrome.storage.local.get(history_key, function (item) {
-
-                var history_object = {};
-
-                if (!$.isEmptyObject(item)) {
-                    history_object = item[history_key];
+                if (!$.isEmptyObject(storage)) {
+                    storage.history[timestamp] = entry;
+                } else {
+                    storage['history'] = {};
+                    storage['history'][timestamp] = entry;
                 }
 
-                history_object[timestamp] = content;
-
-                var storage_object = {};
-                storage_object[history_key] = history_object;
-
-                chrome.storage.local.set(storage_object);
-//                chrome.storage.local.clear();
+                chrome.storage.local.set(storage);
             });
+        };
+
+        self.clearHistory = function (){
+            chrome.storage.local.clear();
         };
 
         AppEngineConsoleFix.editTable = function () {
@@ -92,7 +101,8 @@ if (window.AppEngineConsoleFix === undefined) {
             });
 
             $('#showHistoryButton').click(function () {
-                self.loadHistory();
+                self.openHistoryPanel();
+//                self.clearHistory();
             });
         };
 
@@ -159,26 +169,22 @@ if (window.AppEngineConsoleFix === undefined) {
                         }
                     }
                 };
-                return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "python"), spaceOverlay);
+                return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || 'python'), spaceOverlay);
             });
 
             self.codearea = CodeMirror.fromTextArea(inputarea, codeConfigOptions);
 
             // one is for localhost, other for AppEngine console
             var submit_button = $('#execute_button') === null ? $('#submitbutton') : $('#execute_button');
-            var form = $('#submitbutton').closest('form');
+            var form = submit_button.closest('form');
 
             submit_button.click(function (event)
             {
                 //Needed to prevent stale values being submitted in localhost
-                console.log('Submit button clicked');
                 self.codearea.save();
-                self.saveHistory(self.codearea.getValue());
             });
 
             form.submit(function (event) {
-                console.log('Form submitted.');
-                self.codearea.save();
                 self.saveHistory(self.codearea.getValue());
             });
         };
@@ -192,17 +198,18 @@ if (window.AppEngineConsoleFix === undefined) {
             if (window.name.indexOf('output') === -1 && !in_appengine_console){
                 AppEngineConsoleFix.editTable();
                 AppEngineConsoleFix.createCodeArea();
+                self.openHistoryPanel();
             }
         });
 
         //If we're not in an iframe (i.e page is being viewed from appspot console or localhost)
-        if (top === self) {
+        if (window.top === window.self) {
             $('.g-doc-1024').css('width', '98%');
             $('#ae-content').css('height', '2000px');
             $('iframe').attr('height', '100%');
             $('#ae-custom-page').css('height', '100%');
         }
-        //If we are in an iframe, (i.e page is being viewed from AppEngine console)
+//        //If we are in an iframe, (i.e page is being viewed from AppEngine console)
         else {
             //Remove the left hand nav bar and reset margin
             $('#ae-lhs-nav').remove();
