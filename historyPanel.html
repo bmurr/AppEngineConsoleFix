@@ -17,80 +17,130 @@
     <script src="history-panel.js"></script>
 </head>
 <body ng-app="historyPanel">
+    <!--http://codepen.io/anon/pen/yYeMrZ?editors=110-->
     <div id="rootContainer" class="platform-mac" ng-controller="HistoryPanelCtrl">
+        <div class="flex-container">
+            <div class="columns">
+                <div class="column-one">
+                    <div class="data-header">
+                        <table class="heading-table">
+                            <colgroup>
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td ng-click="order('timestamp')">Timestamp</td>
+                                    <td ng-click="order('location')" ng-show="!options.selectedHistoryItem">Location</td>
+                                    <td ng-click="order('url')" ng-show="!options.selectedHistoryItem">URL</td>
+                                    <td ng-click="order('contentLength')" ng-show="!options.selectedHistoryItem">Content Length</td>
+                                    <td ng-click="order('content')" ng-show="!options.selectedHistoryItem">Content</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="grid-body" ng-class="{'single-column': !!options.selectedHistoryItem}">
+                        <table>
+                            <colgroup>
+                                <col>
+                                <col ng-if="!options.selectedHistoryItem">
+                                <col ng-if="!options.selectedHistoryItem">
+                                <col ng-if="!options.selectedHistoryItem">
+                                <col ng-if="!options.selectedHistoryItem">
+                            </colgroup>
+                            <tbody>
+                                <tr ng-repeat="item in history|orderBy:'-timestamp' track by item.timestamp" ng-click="selectHistoryItem(item)" ng-class="{'selected': item===options.selectedHistoryItem}">
+                                    <td>{{item.prettyTimestamp}}</td>
+                                    <td ng-if="!options.selectedHistoryItem">{{item.location}}</td>
+                                    <td ng-if="!options.selectedHistoryItem">{{item.url}}</td>
+                                    <td ng-if="!options.selectedHistoryItem">{{item.contentLength}}</td>
+                                    <td ng-if="!options.selectedHistoryItem">{{item.content}}</td>
+                                </tr>
+                            </tbody>
 
-        <div class="data-grid">
-
-            <div class="flat-view" ng-if="!options.selectedHistoryItem">
-                <table class="grid-header">
-                    <thead>
-                    <tr>
-                        <th ng-click="order('timestamp')">Timestamp</th>
-                        <th ng-click="order('location')" ng-show="!options.selectedHistoryItem">Location</th>
-                        <th ng-click="order('url')" ng-show="!options.selectedHistoryItem">URL</th>
-                        <th ng-click="order('contentLength')" ng-show="!options.selectedHistoryItem">Content Length</th>
-                        <th ng-click="order('content')" ng-show="!options.selectedHistoryItem">Content</th>
-                    </tr>
-                    </thead>
-                </table>
-
-                <table class="grid-body">
-                    <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Location</th>
-                        <th>URL</th>
-                        <th>Content Length</th>
-                        <th>Content</th>
-                    </tr>
-                    </thead>
-                    <tr ng-repeat="item in history track by item.timestamp" ng-click="selectHistoryItem(item)">
-                        <td>{{item.prettyTimestamp}}</td>
-                        <td>{{item.location}}</td>
-                        <td>{{item.url}}</td>
-                        <td>{{item.contentLength}}</td>
-                        <td>{{item.content}}</td>
-                    </tr>
-                </table>
-
-            </div>
-
-            <div class="item-selected-view" ng-if="options.selectedHistoryItem">
-                <div class="timestamp-column">
-                    <table class="grid-header">
-                        <thead>
-                        <tr>
-                            <th ng-click="order('timestamp')">Timestamp</th>
-                        </thead>
-                    </table>
-                    <table class="timestamp-table">
-                        <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                        </tr>
-                        </thead>
-                        <tr ng-repeat="item in history track by item.timestamp" ng-click="selectHistoryItem(item)">
-                            <td>{{item.prettyTimestamp}}</td>
-                        </tr>
-                    </table>
+                        </table>
+                    </div>
                 </div>
-                <div class="code-column">
+                <div class="column-two" ng-if="options.selectedHistoryItem">
                     <a class="close" ng-click="options.selectedHistoryItem = null">×</a>
-                    <textarea code-area content="options.selectedHistoryItem.content"></textarea>
+                    <textarea code-area item="options.selectedHistoryItem"></textarea>
                 </div>
             </div>
 
-            <div class="no-content" ng-if="history.items.length == 0">
-                <i class="ion-clock icon-2x"></i> <br>
-            </div>
-
-            <div class="summary-bar">{{summary.logCount}} records | {{summary.bytesInUse}} </div>
         </div>
-
-
-
-
+        <div class="summary-bar">{{summary.logCount}} records | {{summary.bytesInUse}} </div>
     </div>
+
+    <!--<div id="rootContainer" class=" platform-mac" ng-controller="HistoryPanelCtrl">-->
+
+        <!--<div class="data-grid">-->
+
+            <!--<div class="flat-view" ng-if="!options.selectedHistoryItem">-->
+                <!--<table class="grid-header">-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                        <!--<th ng-click="order('timestamp')">Timestamp</th>-->
+                        <!--<th ng-click="order('location')" ng-show="!options.selectedHistoryItem">Location</th>-->
+                        <!--<th ng-click="order('url')" ng-show="!options.selectedHistoryItem">URL</th>-->
+                        <!--<th ng-click="order('contentLength')" ng-show="!options.selectedHistoryItem">Content Length</th>-->
+                        <!--<th ng-click="order('content')" ng-show="!options.selectedHistoryItem">Content</th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                <!--</table>-->
+
+                <!--<table class="grid-body">-->
+                    <!--<thead>-->
+                    <!--<tr>-->
+                        <!--<th>Timestamp</th>-->
+                        <!--<th>Location</th>-->
+                        <!--<th>URL</th>-->
+                        <!--<th>Content Length</th>-->
+                        <!--<th>Content</th>-->
+                    <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tr ng-repeat="item in history|orderBy:'timestamp' track by item.timestamp" ng-click="selectHistoryItem(item)">-->
+                        <!--<td>{{item.prettyTimestamp}}</td>-->
+                        <!--<td>{{item.location}}</td>-->
+                        <!--<td>{{item.url}}</td>-->
+                        <!--<td>{{item.contentLength}}</td>-->
+                        <!--<td>{{item.content}}</td>-->
+                    <!--</tr>-->
+                <!--</table>-->
+
+            <!--</div>-->
+
+            <!--<div class="item-selected-view" ng-if="options.selectedHistoryItem">-->
+                <!--<div class="timestamp-column">-->
+                    <!--<table class="grid-header">-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                            <!--<th ng-click="order('timestamp')">Timestamp</th>-->
+                        <!--</thead>-->
+                    <!--</table>-->
+                    <!--<table class="timestamp-table">-->
+                        <!--<thead>-->
+                        <!--<tr>-->
+                            <!--<th>Timestamp</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tr ng-repeat="item in history|orderBy:'-timestamp' track by item.timestamp" ng-click="selectHistoryItem(item)" ng-class="{'selected': item===options.selectedHistoryItem}">-->
+                            <!--<td>{{item.prettyTimestamp}}</td>-->
+                        <!--</tr>-->
+                    <!--</table>-->
+                <!--</div>-->
+                <!--<div resizer class="data-grid-resizer"></div>-->
+                <!--<div class="code-column">-->
+                    <!--<a class="close" ng-click="options.selectedHistoryItem = null">×</a>-->
+                    <!--<textarea code-area item="options.selectedHistoryItem"></textarea>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="no-content" ng-if="history.items.length == 0">-->
+                <!--<i class="ion-clock icon-2x"></i> <br>-->
+            <!--</div>-->
+
+            <!--<div class="summary-bar">{{summary.logCount}} records | {{summary.bytesInUse}} </div>-->
+        <!--</div>-->
+    <!--</div>-->
 </body>
 
 </html>

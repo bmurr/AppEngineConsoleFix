@@ -5,6 +5,7 @@
 
 #rootContainer {
     height: 100%;
+    width: 100%;
 }
 
 body {
@@ -17,19 +18,233 @@ html, body {
     min-height: 100%;
 }
 
-.data-grid {
-    position: relative;
-    border-bottom: 1px solid #aaa;
-    font-size: 11px;
-    line-height: 120%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    bottom: 0;
-    height: 100%;
+
+/*.data-grid {*/
+    /*position: relative;*/
+    /*border-bottom: 1px solid #aaa;*/
+    /*font-size: 11px;*/
+    /*line-height: 120%;*/
+    /*overflow-x: hidden;*/
+    /*overflow-y: scroll;*/
+    /*bottom: 0;*/
+    /*height: 100%;*/
+/*}*/
+
+.data-header table{
+    table-layout: fixed;
 }
 
-.data-grid table {
+.grid-body table {
     table-layout: fixed;
+    border-spacing: 0;
+    /*border-collapse: separate;*/
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    padding-bottom: 17px;
+    /*left: 0;*/
+    /*top: 0;*/
+    /*right: 0;*/
+    /*bottom: 0;*/
+}
+
+.grid-body td{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 17px;
+    border-left: 1px solid #c3c3c3;
+    height: 21px;
+    padding: 1px 4px;
+    cursor: pointer;
+}
+
+.data-header td{
+    height: 21px;
+    text-align: left;
+    font-weight: normal;
+    vertical-align: middle;
+    background: white;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.data-header{
+        padding: 0 4px;
+    border-bottom: 1px solid #aaa;
+    border-left: 1px solid #aaa;
+}
+
+/*.data-grid .grid-body td {*/
+    /*max-width: 0;*/
+    /*overflow: hidden;*/
+/*}*/
+
+/*.data-grid .grid-body {*/
+    /*top: 22px;*/
+/*}*/
+
+/*.data-grid .grid-body thead {*/
+    /*display: none;*/
+/*}*/
+
+/*.data-grid th:hover {*/
+    /*background-color: #E6E6E6;*/
+/*}*/
+
+/*.data-grid td {*/
+    /*box-sizing: border-box;*/
+/*}*/
+
+.column-one tr:nth-child(odd) {
+    background-color: #eee;
+}
+
+
+/*.data-grid .grid-header {*/
+    /*position: fixed;*/
+    /*z-index: 1000;*/
+/*}*/
+
+/*.data-grid .item-selected-view{*/
+    /*height: 100%;*/
+/*}*/
+
+.column-two .close{
+    position: absolute;
+    top: 0;
+    right: 10px;
+    z-index: 100;
+    cursor:pointer;
+}
+
+/*.data-grid .no-content {*/
+    /*background-color: #E2E2E2;*/
+    /*height: 100%;*/
+/*}*/
+
+/*.data-grid .timestamp-column table{*/
+    /*width:30%;*/
+/*}*/
+
+/*.data-grid .code-column{*/
+    /*float:right;*/
+    /*width:70%;*/
+    /*height:100%;*/
+    /*min-width: 30%;*/
+
+/*}*/
+
+.CodeMirror{
+    height: 100%;
+    border-left: 1px solid #C9C9C9;
+    font-size:13px;
+}
+
+.grid-body tr.selected{
+    background-color: #3879D9
+}
+
+/*.data-grid-resizer {*/
+    /*position: fixed;*/
+    /*top: 0;*/
+    /*bottom: 0;*/
+    /*width: 5px;*/
+    /*z-index: 1001;*/
+    /*cursor: col-resize;*/
+/*}*/
+
+.summary-bar {
+    bottom: 0;
+    left:0;
+    width: 100%;
+    order: 3;
+    z-index:5;
+    border-top: 1px solid #aaa;
+    background: #E6E6E6;
+    position: fixed;
+    padding-left: 2px;
+    padding-bottom: 1px;
+
+}
+
+/*div:hover {
+    border: 1px solid red;
+}*/
+* {
+    box-sizing:border-box;
+}
+div {
+}
+
+td {
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.flex-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-flow: row wrap;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.columns{
+    display: flex;
+    height: 100%;
+    flex-flow: column wrap;
+    overflow: hidden;
+}
+
+.flex-container > * {
+    flex: 1 100%;
+}
+.column-one {
+    order: 1;
+    height:95%;
+    flex: auto;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.column-one .single-column{
+    width: 190px;
+}
+
+.column-two {
+    background-color:gold;
+    order: 2;
+    height: 100%;
+    width: 100%;
+    flex: auto;
+    overflow-y:scroll;
+    z-index:4;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    left:0;
+    width: 100%;
+    order: 3;
+    background-color:purple;
+    z-index:5;
+}
+textarea {
+    display: flex;
+    height:100%;
+    width: 100%;
+    resize: none;
+    opacity: .9;
+}
+
+table .heading-table{
+  position:fixed;
+  z-index:1000;
+}
+.table-heading{
+      table-layout: fixed;
     border-spacing: 0;
     border-collapse: separate;
     height: 100%;
@@ -41,105 +256,20 @@ html, body {
     bottom: 0;
 }
 
-.data-grid td,
-.data-grid th {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    line-height: 17px;
-    border-left: 1px solid #c3c3c3;
-    height: 21px;
-    padding: 1px 4px;
-    cursor: pointer;
-    /*display:block;*/
+.data-header{
+  position:absolute;
+  width:100%;
+  background-color:white;
+  z-index:3;
 }
 
-.data-grid th {
-    height: 21px;
-    text-align: left;
-    font-weight: normal;
-    vertical-align: middle;
-    padding: 0 4px;
-    border-bottom: 1px solid #aaa;
-    border-left: 1px solid #aaa;
-    background: white;
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.data-table{
+  position: absolute;
+  top: 22px;
 }
 
-.data-grid .grid-body td {
-    max-width: 0;
-    overflow: hidden;
-}
-
-.data-grid .grid-body {
-    top: 22px;
-}
-
-.data-grid .grid-body thead {
-    display: none;
-}
-
-.data-grid th:hover {
-    background-color: #E6E6E6;
-}
-
-.data-grid td {
-    box-sizing: border-box;
-}
-
-.data-grid tbody tr:nth-child(odd) {
-    background-color: #eee;
-}
-
-.data-grid .summary-bar {
-    border-top: 1px solid #aaa;
-    width: 100%;
-    background: #E6E6E6;
-    position: fixed;
-    bottom: 0;
-    padding-left: 2px;
-    padding-bottom: 1px;
-    z-index: 1000;
-
-}
-
-.data-grid .grid-header {
-    position: fixed;
-    z-index: 1000;
-}
-
-.data-grid .item-selected-view{
-    height: 100%;
-}
-
-.data-grid .item-selected-view .close{
-    position: absolute;
-    top: 0;
-    right: 10px;
-    z-index: 100;
-    cursor:pointer;
-}
-
-.data-grid .no-content {
-    background-color: #E2E2E2;
-    height: 100%;
-}
-
-.data-grid .timestamp-column table{
-    width:30%;
-}
-
-.data-grid .code-column{
-    float:right;
-    width:70%;
-    height:100%;
-    min-width: 30%;
-
-}
-
-.CodeMirror{
-    height: 100%;
-    border: 1px solid #C9C9C9;
-    font-size:13px;
+.grid-body{
+  position:relative;
+  top: 24px;
+  padding-bottom: 15px;
 }

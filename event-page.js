@@ -7,7 +7,7 @@ var HistoryPanel = function () {
 
     self.openPanel = function () {
         var windowOptions = {
-            'width': 500,
+            'width': 900,
             'height': 600,
             'type': 'panel',
             'url': 'historyPanel.html'
@@ -20,13 +20,18 @@ var HistoryPanel = function () {
     self.openPanel();
 };
 
-var historyPanel;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request && request.action === 'openHistoryPanel') {
-        if (historyPanel !== undefined) {
-            historyPanel.focus()
+        if (!!window.historyPanel) {
+            window.historyPanel.focus()
         } else {
-            historyPanel = new HistoryPanel();
+            window.historyPanel = new HistoryPanel();
         }
     }
+});
+
+chrome.windows.onRemoved.addListener(function(windowID){
+   if (windowID === window.historyPanel.window.id){
+       window.historyPanel = null;
+   }
 });

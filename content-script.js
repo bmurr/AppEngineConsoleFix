@@ -175,7 +175,7 @@ if (window.AppEngineConsoleFix === undefined) {
             self.codearea = CodeMirror.fromTextArea(inputarea, codeConfigOptions);
 
             // one is for localhost, other for AppEngine console
-            var submit_button = $('#execute_button') === null ? $('#submitbutton') : $('#execute_button');
+            var submit_button = jQuery('#execute_button').length ? jQuery('#execute_button') : jQuery('#submitbutton') ;
             var form = submit_button.closest('form');
 
             submit_button.click(function (event)
@@ -198,7 +198,6 @@ if (window.AppEngineConsoleFix === undefined) {
             if (window.name.indexOf('output') === -1 && !in_appengine_console){
                 AppEngineConsoleFix.editTable();
                 AppEngineConsoleFix.createCodeArea();
-                self.openHistoryPanel();
             }
         });
 

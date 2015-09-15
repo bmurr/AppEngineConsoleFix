@@ -36,13 +36,15 @@ historyPanelApp.controller('HistoryPanelCtrl', function ($scope) {
         });
 
         Promise.all([usagePromise, dataPromise]).then(function (values) {
-            $scope.history = values[1].history;
+            $scope.history = [];
 
             var logCount = 0;
-            angular.forEach($scope.history, function(value, key){
-                $scope.history[key].prettyTimestamp = $scope.prettyTime(new Date(value.timestamp));
-                $scope.history[key].location = value.url.indexOf('localhost') !== -1 ? 'localhost' : 'appengine';
-                $scope.history[key].contentLength = value.content.length;
+            angular.forEach(values[1].history, function(value, key){
+                value.prettyTimestamp = $scope.prettyTime(new Date(value.timestamp));
+                value.location = value.url.indexOf('localhost') !== -1 ? 'localhost' : 'appengine';
+                value.contentLength = value.content.length;
+                $scope.history.push(value);
+//                $scope.options.selectedHistoryItem = $scope.history[Object.keys($scope.history)[0]];
                 logCount += 1;
             });
 
@@ -85,18 +87,46 @@ historyPanelApp.directive('codeArea', function(){
                 "dragDrop": false,
                 "viewportMargin": Infinity
             };
-
         scope.codearea = CodeMirror.fromTextArea(element[0], codeConfigOptions);
-        scope.codearea.setValue(scope.content);
 
-        //Watch selectedHistoryItem service...change content based on that.
+        scope.$watch('item', function(value) {
+            scope.codearea.setValue(scope.item.content);
+        });
+
     }
 
     return {
         scope: {
-                content: '=?'
+                item: '=?'
         },
         link: link
     };
 });
 
+historyPanelApp.directive('resizer', function ($document) {
+    return function (scope, element, attr) {
+        var startX = 200, x = 0
+        element.css({
+            border: '1px solid red'
+        });
+        element.on('mousedown', function (event) {
+            // Prevent default dragging of selected content
+            event.preventDefault();
+            startX = event.screenX - x;
+            $document.on('mousemove', mousemove);
+            $document.on('mouseup', mouseup);
+        });
+
+        function mousemove(event) {
+            x = event.screenX - startX;
+            element.css({
+                left: x + 'px'
+            });
+        }
+
+        function mouseup() {
+            $document.off('mousemove', mousemove);
+            $document.off('mouseup', mouseup);
+        }
+    };
+});
