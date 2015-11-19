@@ -58,6 +58,10 @@ html, body {
     cursor: pointer;
 }
 
+*:focus{
+    outline: none;
+}
+
 .data-header td{
     height: 21px;
     text-align: left;
