@@ -9,69 +9,41 @@
 
     <!--Third-party JS libraries-->
     <script src="lib/jquery/jquery-2.1.4.min.js"></script>
-    <script src="lib/sorttable/sorttable.js"></script>
     <script src="lib/angular/angular-1.4.5.min.js"></script>
     <script src="lib/codemirror/lib/codemirror-compressed-4.1.js"></script>
 
-    <!--Javascript-->
-    <script src="history-panel.js"></script>
+    <!--FlexGrid Module-->
+    <script src="flex-grid/main.js"></script>
+    <script src="flex-grid/directives/flexGrid.js"></script>
+    <script src="flex-grid/services/flexGridConfigFactory.js"></script>
+    <link rel="stylesheet" href="flex-grid/css/flexGrid.css">
+
+    <!--HistoryPanel Module-->
+    <script src="history-panel/main.js"></script>
+    <script src="history-panel/controllers/historyPanelCtrl.js"></script>
+    <script src="history-panel/directives/codeArea.js"></script>
+    <script src="history-panel/directives/scrollUpDown.js"></script>
 </head>
 <body ng-app="historyPanel">
     <!--http://codepen.io/anon/pen/yYeMrZ?editors=110-->
     <div id="rootContainer" class="platform-mac" ng-controller="HistoryPanelCtrl">
         <div class="flex-container">
-            <div class="columns">
-                <div class="column-one">
-                    <div class="data-header">
-                        <table class="heading-table">
-                            <colgroup>
-                                <col style="width:180px; min-width: 180px">
-                                <col style="width:180px">
-                                <col style="width:180px">
-                                <col style="width:180px">
-                                <col style="width:180px">
-                            </colgroup>
-                            <tbody>
-                                <tr>
-                                    <td ng-click="order('timestamp')">Timestamp</td>
-                                    <td ng-click="order('location')" ng-show="!settings.selectedHistoryItem">Location</td>
-                                    <td ng-click="order('url')" ng-show="!settings.selectedHistoryItem">URL</td>
-                                    <td ng-click="order('contentLength')" ng-show="!settings.selectedHistoryItem">Content Length</td>
-                                    <td ng-click="order('content')" ng-show="!settings.selectedHistoryItem">Content</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="grid-body" ng-class="{'single-column': !!settings.selectedHistoryItem}">
-                        <table >
-                            <colgroup>
-                                <col>
-                                <col style="width:180px; min-width: 180px" ng-if="!settings.selectedHistoryItem">
-                                <col style="width:180px" ng-if="!settings.selectedHistoryItem">
-                                <col style="width:180px" ng-if="!settings.selectedHistoryItem">
-                                <col style="width:180px" ng-if="!settings.selectedHistoryItem">
-                            </colgroup>
-                            <tbody>
-                                <tr scroll-up-down tabindex="0" ng-repeat="item in settings.history|orderBy:'-timestamp' track by item.timestamp" ng-click="selectHistoryItem(item, $index)" ng-class="{'selected': item===settings.selectedHistoryItem}">
-                                    <td>{{item.prettyTimestamp}}</td>
-                                    <td ng-if="!settings.selectedHistoryItem">{{item.location}}</td>
-                                    <td ng-if="!settings.selectedHistoryItem">{{item.url}}</td>
-                                    <td ng-if="!settings.selectedHistoryItem">{{item.contentLength}}</td>
-                                    <td ng-if="!settings.selectedHistoryItem">{{item.content}}</td>
-                                </tr>
-                            </tbody>
 
-                        </table>
-                    </div>
+
+            <div class="columns">
+
+                <div class="column-one" ng-style="{'flex': columnOneStyle}">
+                    <div flex-grid class="flex-grid" config="historyConfig"></div>
                 </div>
-                <div class="column-two" ng-if="settings.selectedHistoryItem">
-                    <a class="close" ng-click="settings.selectedHistoryItem = null">×</a>
-                    <textarea code-area item="settings.selectedHistoryItem"></textarea>
+
+                <div class="column-two" ng-if="historyConfig.selectedHistoryItem">
+                    <a class="close" ng-click="historyConfig.selectedCallback($event)">×</a>
+                    <textarea code-area item="historyConfig.selectedHistoryItem"></textarea>
                 </div>
             </div>
-
+            <div class="summary-bar">{{summary.logCount}} records | {{summary.bytesInUse}} </div>
         </div>
-        <div class="summary-bar">{{summary.logCount}} records | {{summary.bytesInUse}} </div>
+
     </div>
 
 
