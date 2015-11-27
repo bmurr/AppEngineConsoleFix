@@ -159,8 +159,8 @@ angular.module('flexGrid')
             scope: {
                 config: '='
             },
-            priority: 1000,
-            terminal: true,
+            priority: 900,
+//            terminal: false,
             compile: compile,
             templateUrl: 'flex-grid/templates/flexGridTemplate.html'
         };

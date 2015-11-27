@@ -59,9 +59,6 @@ angular.module('historyPanel')
                 });
                 history.reverse();
 
-                //TODO: virtualize list
-                history = history.slice(0, 40);
-
                 $scope.summary = {
                     bytesInUse: $scope.prettyBytes(values[0]),
                     logCount: logCount
