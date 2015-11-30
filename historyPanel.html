@@ -34,7 +34,7 @@
             <div class="columns">
 
                 <div class="column-one" ng-style="{'flex': columnOneStyle}">
-                    <div flex-grid class="flex-grid" config="historyConfig"></div>
+                    <div flex-grid class="flex-grid" config="historyConfig" ng-focus="!historyConfig.selectedHistoryItem"></div>
                 </div>
 
                 <div class="column-two" ng-if="historyConfig.selectedHistoryItem">

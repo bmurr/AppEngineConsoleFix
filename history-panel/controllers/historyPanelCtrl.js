@@ -72,9 +72,10 @@ angular.module('historyPanel')
 
         function selectedCallback(event, rowIndex, columnIndex){
             $scope.historyConfig.selectedHistoryItem = $scope.historyConfig.data[rowIndex];
-            var target = event.target;
-            var columnOneWidth = angular.element(angular.element(target).closest('.flex-grid-root').find('.header-container col')[0]).css('width');
+            var flexGridRoot = angular.element('.flex-grid-root');
+            var columnOneWidth = angular.element(flexGridRoot.find('.header-container col')[0]).css('width');
             $scope.columnOneStyle = $scope.historyConfig.selectedHistoryItem ? '0 0 ' + columnOneWidth : '1 1 auto';
+            flexGridRoot.focus();
         }
 
         $scope.history = [];

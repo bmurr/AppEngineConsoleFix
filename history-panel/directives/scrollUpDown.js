@@ -1,7 +1,6 @@
 angular.module('historyPanel').directive('scrollUpDown', function ($timeout, historyPanelSettings) {
 
     function handleUpDownEvent(scope, event) {
-        console.log([scope, event]);
         var selectedRowElement = jQuery('.column-one .selected');
         var rowHeight = selectedRowElement.height();
         var selectedRowElementPosition = selectedRowElement.position().top;

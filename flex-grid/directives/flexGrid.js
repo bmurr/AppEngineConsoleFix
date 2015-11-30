@@ -1,6 +1,6 @@
 angular.module('flexGrid')
     .directive('flexGrid', function ($timeout, $window, $document) {
-        var config, columnWidthPercentages, columnWidthPixels;
+        var config, scope, columnWidthPercentages, columnWidthPixels;
 
         function syncHeaderDataColumnWidths(rootElement) {
             var headerColumns = rootElement.find('.header-container col');
@@ -86,6 +86,36 @@ angular.module('flexGrid')
             $document.on('mouseup', mouseup);
         }
 
+        function debounce(func, delay, doApply) {
+            // See: http://modernjavascript.blogspot.ie/2013/08/building-better-debounce.html
+            var timeout, args, context, timestamp;
+            return function () {
+
+                context = this;
+                args = [].slice.call(arguments, 0);
+                timestamp = new Date();
+
+                var later = function () {
+
+                    var last = (new Date()) - timestamp;
+                    if (last < delay) {
+                        timeout = $timeout(later, delay - last, doApply);
+
+                    } else {
+                        $timeout.cancel(timeout);
+                        timeout = null;
+                        $timeout(func.bind.apply(func, [null].concat(args)), 0, doApply);
+                    }
+                };
+
+                if (!timeout) {
+                    timeout = $timeout(later, delay, doApply);
+                }
+            }
+        }
+
+        var debouncedUpDownHandler;
+
         function keyDownHandler(event) {
             var Keys = {
                 Left: { code: 37, name: "\u2190" },
@@ -94,29 +124,51 @@ angular.module('flexGrid')
                 Down: { code: 40, name: "\u2193" }
             };
 
-            function upKeyHandler() {
+            function upDownHandler(event){
+                var rootElement = angular.element(event.target);
 
+                var selectedRowElement = rootElement.find('.selected');
+                var rowHeight = selectedRowElement.height();
+                var selectedRowElementPosition = selectedRowElement.position().top;
+
+                var headerHeight, footerHeight = 0;
+                var scrollingElement = rootElement.find('.data-container');
+                var scrollingElementHeight = scrollingElement.height();
+                var scrollingElementPosition = scrollingElement.scrollTop();
+                var scrollingElementMaxScrollPosition = scrollingElement.prop('scrollHeight') - scrollingElementHeight;
+                var newIndex;
+
+                if (event.keyCode == Keys.Up.code){
+                    if ((rowHeight * scope.selectedRowIndex) - rowHeight < scrollingElementPosition) {
+                        scrollingElement.scrollTop(Math.max((rowHeight * scope.selectedRowIndex) - rowHeight, 0));
+                    }
+                    newIndex = Math.max(0, scope.selectedRowIndex - 1);
+                } else if (event.keyCode == Keys.Down.code){
+                    if ((rowHeight * scope.selectedRowIndex) + (rowHeight * 2) > scrollingElementPosition + scrollingElementHeight){
+                        var delta = (scrollingElementPosition + scrollingElementHeight) % rowHeight;
+                        scrollingElement.scrollTop(Math.min(scrollingElementMaxScrollPosition, scrollingElementPosition + rowHeight - delta));
+                    }
+                    newIndex = Math.min(config.data.length - 1, scope.selectedRowIndex + 1);
+                }
+                scope.selectedRowIndex = newIndex;
+                config.selectedHistoryItem = config.data[newIndex];
             }
 
-            function downKeyHandler() {
-
+            if (debouncedUpDownHandler === undefined){
+                debouncedUpDownHandler = debounce(upDownHandler, 2, true);
             }
 
-            if (event.keyCode === Keys.Up.code) {
-                // event.preventDefault();
-                // event.stopPropgation();
-                upKeyHandler();
-            } else if (event.keyCode === Keys.Down.code) {
-                // event.preventDefault();
-                // event.stopPropgation();
-                downKeyHandler();
+            if (event.keyCode === Keys.Up.code || event.keyCode === Keys.Down.code) {
+                event.preventDefault();
+                event.stopPropagation();
+                debouncedUpDownHandler(event);
             }
-            console.log(event);
         }
 
         function postLink($scope, $element, $attr, ctrl, $transcludeFn) {
 
             config = $scope.config;
+            scope = $scope;
 
             $scope.numColumns = config.numColumns;
             columnWidthPercentages = config.columnWidthPercentages;
@@ -141,7 +193,7 @@ angular.module('flexGrid')
                 onResize($element);
             });
 
-//            angular.element($element).on('keydown', keyDownHandler);
+            angular.element($element).on('keydown', keyDownHandler);
 
 
             //$timeout is run after iterpolation/rendering is complete.
@@ -160,7 +212,6 @@ angular.module('flexGrid')
                 config: '='
             },
             priority: 900,
-//            terminal: false,
             compile: compile,
             templateUrl: 'flex-grid/templates/flexGridTemplate.html'
         };
