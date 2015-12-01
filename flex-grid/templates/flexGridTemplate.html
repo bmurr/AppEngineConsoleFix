@@ -24,7 +24,7 @@
         </colgroup>
         <tbody>
         <tr class="revealed" virtual-repeat="item in config.data track by $index" ng-class="{'selected': $index == selectedRowIndex}">
-            <td ng-repeat="(header, headerName) in config.headerMap" ng-class="header + '-column'" ng-click="selectRow($event, $parent.$index, $index)">{{item[header]}}</td>
+            <td ng-repeat="(header, headerName) in config.headerMap" ng-class="header + '-column'" ng-click="selectRow($event, $parent.$index, $index)" title="{{item.titles[header]}}">{{item[header]}}</td>
         </tr>
         </tbody>
     </table>

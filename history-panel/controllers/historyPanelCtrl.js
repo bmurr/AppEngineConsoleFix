@@ -1,5 +1,5 @@
 angular.module('historyPanel')
-    .controller('HistoryPanelCtrl', function ($scope, flexGridConfigFactory) {
+    .controller('HistoryPanelCtrl', function ($scope, flexGridConfigFactory, humanizedTimeSpan) {
 
         $scope.prettyTime = function (date) {
             return date.getFullYear() + "-"
@@ -51,7 +51,10 @@ angular.module('historyPanel')
                 var logCount = 0;
                 var history = [];
                 angular.forEach(values[1].history, function (value, key) {
-                    value.prettyTimestamp = $scope.prettyTime(new Date(value.timestamp));
+                    value.humanizedTimestamp = humanizedTimeSpan.humanized_time_span(value.timestamp);
+                    value.titles = {};
+                    value.titles.humanizedTimestamp = $scope.prettyTime(new Date(value.timestamp));
+
                     value.location = value.url.indexOf('localhost') !== -1 ? 'localhost' : 'appengine';
                     value.contentLength = value.content.length;
                     history.push(value);
@@ -80,7 +83,7 @@ angular.module('historyPanel')
 
         $scope.history = [];
         $scope.historyConfig = new flexGridConfigFactory.FlexGridConfig();
-        $scope.historyConfig.setHeaderMap({prettyTimestamp: 'Timestamp', url: 'URL', location: 'Location', contentLength: 'Size', content: 'Content'});
+        $scope.historyConfig.setHeaderMap({humanizedTimestamp: 'Timestamp', url: 'URL', location: 'Location', contentLength: 'Size', content: 'Content'});
         $scope.historyConfig.setColumnWidthPercentages([20, 25, 10, 5, 40]);
         $scope.historyConfig.setSelectedCallback(selectedCallback);
         $scope.historyConfig.numColumns = [0, 1, 2, 3, 4];

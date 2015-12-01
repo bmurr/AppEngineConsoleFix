@@ -129,9 +129,6 @@ angular.module('flexGrid')
 
                 var selectedRowElement = rootElement.find('.selected');
                 var rowHeight = selectedRowElement.height();
-                var selectedRowElementPosition = selectedRowElement.position().top;
-
-                var headerHeight, footerHeight = 0;
                 var scrollingElement = rootElement.find('.data-container');
                 var scrollingElementHeight = scrollingElement.height();
                 var scrollingElementPosition = scrollingElement.scrollTop();
