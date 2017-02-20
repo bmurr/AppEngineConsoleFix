@@ -2,6 +2,58 @@
     height: 100%;
 }
 
+.search-bar{
+  width: 100%;
+  padding: 5px;
+  display: flex;
+  background-color: #eee;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  position: fixed;
+  bottom: 19px;
+}
+
+.search-bar input{
+  flex: 1 1 auto;
+  border: 1px solid #ccc;
+}
+
+.search-bar input:focus{
+  outline: none;
+  border: 1px solid #68d;
+}
+
+.search-bar button{
+  border-radius: 0px 7px 7px 0px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-left: none;
+  background-color: #eee;    
+  outline: none;
+  user-select: none;
+}
+
+.search-bar button:active{
+  outline: none;
+  background-color: #ddd;
+}
+
+.search-bar .close{
+  cursor: pointer;
+  padding: 0px 5px;
+  margin-left: 5px;    
+  align-content: center;
+  text-align: center;
+  line-height: 19px;
+  border-radius: 5px;
+  user-select: none;
+}
+
+.search-bar .close:hover{
+  background-color: #ddd;
+}
+
 .flex-grid-root{
   color: rgb(48, 57, 66);
   font-size: 11px;
@@ -115,7 +167,7 @@
   position: relative;
   overflow-x: hidden;
   overflow-y: overlay;
-  height: calc(100% - 46px);
+  height: calc(100% - 29px);
 }
 
 .flex-grid-root .data-container tr:nth-child(odd){
@@ -139,9 +191,14 @@
     cursor: col-resize;
 }
 
+.flex-grid-root .data-grid-resizer[disabled=disabled]{
+    pointer-events: none;
+}
+
 .corner{
   display: none;
 }
+
 
 .noselect{
   -webkit-touch-callout: none;

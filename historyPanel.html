@@ -29,18 +29,22 @@
     <!--http://codepen.io/anon/pen/yYeMrZ?editors=110-->
     <div id="rootContainer" class="platform-mac" ng-controller="HistoryPanelCtrl">
         <div class="flex-container">
-
-
             <div class="columns">
 
                 <div class="column-one" ng-style="{'flex': columnOneStyle}">
                     <div flex-grid class="flex-grid" config="historyConfig" ng-focus="!historyConfig.selectedHistoryItem"></div>
+
                 </div>
 
                 <div class="column-two" ng-if="historyConfig.selectedHistoryItem">
                     <a class="close" ng-click="historyConfig.selectedCallback($event)">×</a>
                     <textarea code-area item="historyConfig.selectedHistoryItem"></textarea>
                 </div>
+            </div>
+            <div class="search-bar" ng-show="showSearchBar">
+                <input type="text" ng-model="searchInputText">
+                <button ng-click="search(searchInputText)">Find</button>
+                <a class="close" ng-click="toggleSearchBar(false)">×</a>
             </div>
             <div class="summary-bar">{{summary.logCount}} records | {{summary.bytesInUse}} </div>
         </div>
