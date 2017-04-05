@@ -20,8 +20,12 @@ This will read the ```package.json``` and install Gulp and other required depend
 Gulp is used to perform various tasks, like building the project.
 
 Some useful Gulp tasks (see ```gulpfile.js``` for the full list):
+
 ```gulp```
+
 Runs 'default' task that builds the project and places output in 'build'
 directory.
+
 ```gulp clean```
-Deletes build directory.
+
+Deletes build directory.git checkout master
