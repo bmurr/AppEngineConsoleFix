@@ -1,5 +1,5 @@
 angular.module('historyPanel')
-    .controller('HistoryPanelCtrl', function ($scope, flexGridConfigFactory, humanizedTimeSpan) {
+    .controller('HistoryPanelCtrl', function ($scope, $timeout, flexGridConfigFactory, humanizedTimeSpan) {
 
         $scope.prettyTime = function (date) {
             return date.getFullYear() + "-"
@@ -81,6 +81,57 @@ angular.module('historyPanel')
             flexGridRoot.focus();
         }
 
+        function bindKeyListeners(){
+            angular.element(document).bind('keydown', function (e) {
+                var pressed = [];
+                if(e.shiftKey){
+                    pressed.push("Shift");
+                }
+                if(e.ctrlKey){
+                    pressed.push("Ctrl");
+                }
+                if(e.metaKey){
+                    pressed.push("Meta");
+                } 
+                pressed.push(e.keyCode);
+                console.log(pressed.join(' + '));
+
+                //Hijack Cmd + F and Ctrl + F
+                if ((e.metaKey || e.ctrlKey) && e.keyCode == 70){
+                    toggleSearchBar(true);
+                    e.preventDefault();
+                    e.stopPropagation();    
+                }
+                
+            });
+        }
+
+        function toggleSearchBar(show){
+            show = show === undefined ? !showSearchBar : show;
+            if (!show){
+                // $scope.historyConfig.resetFilter();
+            }
+
+            $timeout(function(){
+                $scope.showSearchBar = show;
+                angular.element('.search-bar input').focus();
+            });
+        }
+
+        function search(text){
+            function searchFn(historyObject){
+                return historyObject.content.indexOf(text) !== -1;
+            }
+            $timeout(function(){
+                // $scope.historyConfig.filterData(searchFn);    
+            });            
+        };
+
+
+
+        $scope.showSearchBar = false;
+        $scope.search = search;
+        $scope.toggleSearchBar = toggleSearchBar;
         $scope.history = [];
         $scope.historyConfig = new flexGridConfigFactory.FlexGridConfig();
         $scope.historyConfig.setHeaderMap({humanizedTimestamp: 'Timestamp', url: 'URL', location: 'Location', contentLength: 'Size', content: 'Content'});
@@ -89,6 +140,7 @@ angular.module('historyPanel')
         $scope.historyConfig.numColumns = [0, 1, 2, 3, 4];
 
         $scope.renderTemplate();
+        bindKeyListeners();
 
 
     });

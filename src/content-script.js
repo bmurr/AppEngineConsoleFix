@@ -185,9 +185,14 @@ if (window.AppEngineConsoleFix === undefined) {
             });
 
             form.submit(function (event) {
-                self.saveHistory(self.codearea.getValue());
+                if (self.shouldSave){
+                    self.saveHistory(self.codearea.getValue());    
+                }                
             });
         };
+
+        // Let's only save Tethras stuff
+        self.shouldSave = $(document).text().toLowerCase().indexOf('tethras') !== -1;
 
         $('document').ready(function () {
             //We don't want to run in the output iframe.
@@ -217,6 +222,8 @@ if (window.AppEngineConsoleFix === undefined) {
             $('#ae-content').css('padding-left', '0px');
             $('#ae-custom-page').css('height', '100%');
         }
+
+
 
     }(window.AppEngineConsoleFix = window.AppEngineConsoleFix || {}, window.jQuery));
 }

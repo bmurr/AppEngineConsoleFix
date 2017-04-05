@@ -8,6 +8,7 @@ angular.module('flexGrid')
             angular.forEach(dataColumns, function (item, index) {
                 var dataColumnWidth = angular.element(item).outerWidth();
                 angular.element(headerColumns[index]).css('width', dataColumnWidth);
+                angular.element(headerColumns[index]).data('width', dataColumnWidth);
             })
 
         }
@@ -26,6 +27,7 @@ angular.module('flexGrid')
                     columnWidth = columnWidthPixels[index];
                 }
                 angular.element(item).css('width', columnWidth + 'px');
+                angular.element(item).data('width', columnWidth + 'px');
             });
 
         }
@@ -41,6 +43,9 @@ angular.module('flexGrid')
         }
 
         function onResize($rootElement) {
+            if (config.selectedHistoryItem){
+                return;
+            }
             setDataColumnWidths($rootElement);
             syncHeaderDataColumnWidths($rootElement);
             setColumnResizerPositions($rootElement);
@@ -192,11 +197,17 @@ angular.module('flexGrid')
 
             angular.element($element).on('keydown', keyDownHandler);
 
-
-            //$timeout is run after iterpolation/rendering is complete.
-            $timeout(function () {
-                onResize($element);
-            })
+            // Watch until Angular renders these parts, then call the first onResize and stop watching.
+            var unregister = $scope.$watch(function () {
+                var headerColumns = $element.find('.header-container col');
+                var dataColumns = $element.find('.data-container tr:first-of-type td');
+                return dataColumns.length !== 0 && headerColumns.length !== 0;
+            }, function (oldValue, newValue) {
+                if (oldValue !== newValue) {
+                    unregister();
+                    onResize($element);
+                }
+            });
         }
 
         function compile($element, $attr) {

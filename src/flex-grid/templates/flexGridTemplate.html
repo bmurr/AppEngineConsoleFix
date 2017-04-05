@@ -29,5 +29,5 @@
         </tbody>
     </table>
   </div>
-  <div class="data-grid-resizer" ng-repeat="handleIndex in config.numColumns.slice(0, -1) track by $index" ng-mousedown="resizeColumn($event)" data-index="{{ $index }}"></div>
+  <div class="data-grid-resizer" ng-repeat="handleIndex in config.numColumns.slice(0, -1) track by $index" ng-mousedown="resizeColumn($event)" data-index="{{ $index }}" ng-disabled="config.selectedHistoryItem"></div>
 </div>
