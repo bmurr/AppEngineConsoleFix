@@ -11,6 +11,11 @@ gulp.task('clean', function(){
 });
 
 
+gulp.task('build:vendor', function(){
+
+});
+
+
 gulp.task('build', function(){
   gulp.src(config.src)
   .pipe(gulp.dest(config.build));
