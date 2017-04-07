@@ -4,54 +4,24 @@
     <meta charset="utf-8">
     <title>AppEngine Console Fix History</title>
 
+    <!-- Stylesheets -->
+
+    <!-- This page stylesheets -->
+    <!-- UI Component Library Stylesheets -->
+    <!-- Codemirror Stylesheets -->
     <link rel="stylesheet" href="lib/codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="history-panel.css">
+    <link rel="stylesheet" href="styles/style.css">
 
-    <!--Third-party JS libraries-->
-    <script src="lib/jquery/jquery-2.1.4.min.js"></script>
-    <script src="lib/angular/angular-1.5.7.min.js"></script>
-    <script src="lib/codemirror/lib/codemirror-compressed-4.1.js"></script>
-
-    <!--FlexGrid Module-->
-    <script src="flex-grid/main.js"></script>
-    <script src="flex-grid/directives/flexGrid.js"></script>
-    <script src="flex-grid/directives/virtualRepeat.js"></script>
-    <script src="flex-grid/services/flexGridConfigFactory.js"></script>
-    <link rel="stylesheet" href="flex-grid/css/flexGrid.css">
-
-    <!--HistoryPanel Module-->
-    <script src="history-panel/main.js"></script>
-    <script src="history-panel/controllers/historyPanelCtrl.js"></script>
-    <script src="history-panel/directives/codeArea.js"></script>
-    <script src="history-panel/services/humanizedTimeSpan.js"></script>
+    <!-- Vendor Libraries(react, codemirror, etc) -->
+    <script src="script/vendor.js"></script>
+        
 </head>
-<body ng-app="historyPanel">
-    <!--http://codepen.io/anon/pen/yYeMrZ?editors=110-->
-    <div id="rootContainer" class="platform-mac" ng-controller="HistoryPanelCtrl">
-        <div class="flex-container">
-            <div class="columns">
+<body>
+    <!-- React Mount Point -->
+    <div id="app"></div>
 
-                <div class="column-one" ng-style="{'flex': columnOneStyle}">
-                    <div flex-grid class="flex-grid" config="historyConfig" ng-focus="!historyConfig.selectedHistoryItem"></div>
-
-                </div>
-
-                <div class="column-two" ng-if="historyConfig.selectedHistoryItem">
-                    <a class="close" ng-click="historyConfig.selectedCallback($event)">×</a>
-                    <textarea code-area item="historyConfig.selectedHistoryItem"></textarea>
-                </div>
-            </div>
-            <div class="search-bar" ng-show="showSearchBar">
-                <input type="text" ng-model="searchInputText">
-                <button ng-click="search(searchInputText)">Find</button>
-                <a class="close" ng-click="toggleSearchBar(false)">×</a>
-            </div>
-            <div class="summary-bar">{{summary.logCount}} records | {{summary.bytesInUse}} </div>
-        </div>
-
-    </div>
-
-
+    <!-- Script entry point -->
+    <script src="script/main.js"></script>
 </body>
 
 </html>

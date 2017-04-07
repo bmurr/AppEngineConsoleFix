@@ -29,3 +29,20 @@ directory.
 ```gulp clean```
 
 Deletes build directory.git checkout master
+
+## Stack
+
+NPM Node Module Package Manager:
+  Yarn
+Task Runner:
+  Gulp
+Frontend Module Bundler:
+  Webpack
+
+Frontend Stack:
+  jQuery
+  React
+  CSS-Modules
+
+Code Formatting:
+  EditorConfig

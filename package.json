@@ -1,8 +1,27 @@
 {
   "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-2": "^6.22.0",
+    "css-loader": "^0.28.0",
     "del": "^2.2.2",
+    "extract-text-webpack-plugin": "^2.1.0",
     "gulp": "^3.9.1",
+    "gulp-debug": "^3.1.0",
     "gulp-util": "^3.0.8",
-    "webpack": "^2.3.3"
+    "node-sass": "^4.5.2",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.16.1",
+    "webpack": "^2.3.3",
+    "webpack-dev-server": "^2.4.2",
+    "webpack-stream": "^3.2.0"
+  },
+  "dependencies": {
+    "codemirror": "4.1",
+    "jquery": "^3.2.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }

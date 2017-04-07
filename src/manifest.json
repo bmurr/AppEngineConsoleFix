@@ -23,16 +23,15 @@
                 "*://localhost:*/_ah/admin/interactive*"
             ],
             "js": [
-                "lib/jquery/jquery-2.1.4.min.js",
-                "lib/codemirror/lib/codemirror-compressed-4.1.js",
-                "content-script.js"
+                "script/vendor.js",
+                "script/content-script.js"
             ],
             "css": [
                 "lib/codemirror/lib/codemirror.css",
                 "lib/codemirror/theme/lesser-dark.css",
                 "lib/codemirror/addon/hint/show-hint.css",
                 "lib/ionicons/ionicons.min.css",
-                "custom-styles.css"
+                "styles/style.css"
             ],
             "all_frames": true,
             "run_at": "document_idle"
@@ -41,13 +40,9 @@
 
     "background":{
         "scripts":[
-            "event-page.js"
+            "script/event-page.js"
         ],
         "persistent": false
-    },
-
-    "sandbox": {
-        "pages":["templates/historyPanelTemplate.html"]
     },
 
     "web_accessible_resources": [
