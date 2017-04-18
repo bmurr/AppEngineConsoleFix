@@ -17,24 +17,6 @@ gulp.task('clean', function(){
 });
 
 
-gulp.task("webpack:build-dev", function(callback) {
-
-  var myDevConfig = Object.create(webpackConfig);
-  myDevConfig.devtool = "sourcemap";
-  myDevConfig.debug = true;
-
-
-  // create a single instance of the compiler to allow caching
-  var devCompiler = webpack(myDevConfig);
-  devCompiler.run(function(err, stats) {
-      if(err) throw new gutil.PluginError("webpack:build-dev", err);
-      gutil.log("[webpack:build-dev]", stats.toString({
-          colors: true
-      }));
-      callback();
-  });
-});
-
 gulp.task('build:vendor', function(){
 
   //All our vendor files are required in a file called vendor.js
@@ -50,6 +32,16 @@ gulp.task('build:vendor', function(){
         path: path.join(__dirname, gulpConfig.buildDirectory, 'script'),
         filename: '[name].js',
         library: '[name]'
+      },
+      module: {
+        loaders: [
+          {
+            test: /\.css$/,
+            exclude: [ path.join(__dirname, gulpConfig.srcDirectory) ],
+            loader: 'css-loader'
+          }
+
+        ]
       },
       plugins: [
         new webpack.DllPlugin({

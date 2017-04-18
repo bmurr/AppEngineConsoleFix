@@ -32,9 +32,14 @@ module.exports = {
           fallback: 'style-loader',
           //resolve-url-loader may be chained before sass-loader if necessary
           use: ['css-loader', 'sass-loader']
-        })
-        // loader: ExtractTextPlugin.extract('style-loader', 'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader')
+        })      
+      },
+      {
+        test: /\.css$/,
+        exclude: [ path.join(__dirname, gulpConfig.srcDirectory) ],
+        loader: 'css-loader'
       }
+
     ]
   },
   resolve: {

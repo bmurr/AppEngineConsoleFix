@@ -1,2 +1,7 @@
-@import 'custom-styles';
-@import 'history-panel';
+@import 'interactive-console';
+
+@import 'historyPanel-base';
+@import 'historyPanel-layout';
+@import 'historyPanel-grid';
+
+@import 'historyPanel-panels';

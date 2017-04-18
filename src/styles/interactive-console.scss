@@ -25,15 +25,26 @@
 
 .CodeMirror-scroll {
     min-height: 200px;
-    height: auto;
+    height: 100%;
     overflow-y: hidden;
     overflow-x: auto;
 }
 
 .CodeMirror{
-    height: auto;
+    height: 100%;
     border: 1px solid #C9C9C9;
+
+    .CodeMirror-gutters{
+        height: 100% !important;
+    }
+
+    .CodeMirror-gutter-wrapper {
+        position: absolute;
+    }
+
 }
+
+
            
 /*Style the controls above the editor*/
 #controls{

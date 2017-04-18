@@ -1,0 +1,15 @@
+* { 
+  box-sizing: border-box;
+}
+
+body, html{
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#app{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}

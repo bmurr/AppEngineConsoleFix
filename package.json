@@ -12,6 +12,7 @@
     "gulp-debug": "^3.1.0",
     "gulp-util": "^3.0.8",
     "node-sass": "^4.5.2",
+    "react-devtools": "^2.0.12",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.16.1",
     "webpack": "^2.3.3",
@@ -19,7 +20,8 @@
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
-    "codemirror": "4.1",
+    "codemirror": "^5.25.0",
+    "immutable": "^3.8.1",
     "jquery": "^3.2.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"

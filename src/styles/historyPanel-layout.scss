@@ -1,0 +1,50 @@
+$main-container-background-color: #ffffff;
+
+.main-container{
+  display: flex;
+  flex-direction: column;
+  background-color: $main-container-background-color;
+  height: 100%;
+  
+  .header{
+    flex: 0 1;
+  }
+  
+  .panel-container{
+    display: flex;
+    flex-direction: row;
+    flex: 1 0;
+  }
+  
+  .panel{
+    display: flex;
+    flex-direction: column;
+    flex: 1 0;
+    height: 100%;
+    overflow: hidden;    
+  }
+  
+  .footer{
+    background-color: #eee;
+    border-top: 1px solid #ccc;
+    flex: 0 1;
+    line-height: 18px;
+    padding-left: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .footer-content{
+      display: flex;
+      justify-content: space-between;
+
+    }
+
+
+  }
+  
+  .floating-bar{    
+    position: absolute;
+    top: 32%;
+    width: 100%;
+  } 
+}
