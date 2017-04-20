@@ -5,6 +5,9 @@
 # Build directory
 build
 
+# Intermediate build files
+vendor/vendor-manifest.json
+
 # Dependency directories
 node_modules
 bower_components

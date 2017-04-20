@@ -1,4 +1,4 @@
-.import-export-panel{
+.panel.import-export-panel{
   .CodeMirror{
     border: none;
     border-top: 1px solid #C9C9C9;
@@ -18,14 +18,15 @@
   }
 }
   
-.history-grid-panel{
+.panel.history-grid-panel{
   .grid-body .grid-column:first-of-type{    
     border-left: none;
     cursor: pointer;
   }
 }
 
-.history-code-panel{
+.panel.history-code-panel{
+  flex-basis: 70%;
 
   .CodeMirror{
     border: none;

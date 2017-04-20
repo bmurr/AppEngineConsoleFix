@@ -1,15 +1,19 @@
 require('styles/style.scss');
+
 const CodeMirror = require('codemirror');
 require('codemirror/addon/mode/overlay');
 require('codemirror/keymap/sublime');
 require('codemirror/mode/python/python');
+
+const Spinner = require('react-spinkit');
+import 'react-spinkit/css/cube-grid.css';
 
 import Immutable from 'immutable';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Grid from './Grid';
+import HistoryGrid from './HistoryGrid';
 import {humanizeTimestamp, prettifyBytes} from './utils';
 
 class CodeArea extends React.Component {
@@ -173,6 +177,7 @@ class HistoryPanel extends React.Component {
     
     this.getInitialState = this.getInitialState.bind(this);
     this.handleHistoryItemSelected = this.handleHistoryItemSelected.bind(this);
+    this.handleCodePanelClose = this.handleCodePanelClose.bind(this);
     this.toggleImportExportPanel = this.toggleImportExportPanel.bind(this);
     
     this.getLocalStorage = this.getLocalStorage.bind(this);
@@ -232,18 +237,17 @@ class HistoryPanel extends React.Component {
 
       history.reverse();
 
-      const headers = ["Timestamp", "URL", "Location", "Size", "Content"];
-      const headerKeys = ['humanizedTimestamp', 'url', 'location', 'contentLength', 'content'];
-      const rows = history.slice(0, 500);
-
-      // const headers = ["Timestamp"];
-      // const headerKeys = ['humanizedTimestamp'];
-      // const rows = history.map((row) => {humanizedTimestamp: row.humanizedTimestamp});      
+      const headers = [
+        {key: 'humanizedTimestamp', title: 'Timestamp'},
+        {key: 'url', title: 'URL'},
+        {key: 'location', title: 'Location'},
+        {key: 'contentLength', title: 'Size'},
+        {key: 'content', title: 'Content'},
+      ]
 
       const data = {
         headers: headers,
-        headerKeys: headerKeys,
-        rows: rows
+        rows: history
       };
 
       this.setState({
@@ -257,19 +261,35 @@ class HistoryPanel extends React.Component {
   getInitialState () {
     return {
       gridPanelVisible: true,
-      codePanelVisible: true,
+      codePanelVisible: false,
       codeAreaOptions: {}    
     }
   }
 
-  handleHistoryItemSelected(event, selectRowCallback, rowIndex, columnIndex) {
-    if (columnIndex === 0) {
-      selectRowCallback(rowIndex);
-      this.setState({
-        codePanelVisible: true,
-        codeAreaValue: this.state.data.rows[rowIndex].content
-      })
-    }
+  handleHistoryItemSelected({index, rowData}) {
+    
+    const newData = Object.assign({}, this.state.data);
+    newData.headers = [{key:'humanizedTimestamp', title:'Timestamp'}];
+    this.setState({
+      codePanelVisible: true,
+      codeAreaValue: rowData.content,
+      data: newData
+    })
+  }
+
+  handleCodePanelClose(){
+    const newData = Object.assign({}, this.state.data);
+    newData.headers = [
+      {key: 'humanizedTimestamp', title: 'Timestamp'},
+      {key: 'url', title: 'URL'},
+      {key: 'location', title: 'Location'},
+      {key: 'contentLength', title: 'Size'},
+      {key: 'content', title: 'Content'},
+    ];
+    this.setState({
+      codePanelVisible: false,
+      data: newData
+    })
   }
 
   toggleImportExportPanel() {
@@ -304,10 +324,13 @@ class HistoryPanel extends React.Component {
             ) :
             (<PanelContainer>
               <Panel className="history-grid-panel" isVisible={this.state.gridPanelVisible}>
-                <Grid data={this.state.data} bodyClickHandler={this.handleHistoryItemSelected}/>
+              { this.state.data ?
+                (<HistoryGrid data={this.state.data} itemSelectedHandler={this.handleHistoryItemSelected}/>) :
+                <div></div>
+              }
               </Panel>
               <Panel className="history-code-panel" isVisible={this.state.codePanelVisible}>
-                <a className="close-button">×</a>
+                <a className="close-button" onClick={this.handleCodePanelClose}>×</a>
                 <CodeArea value={this.state.codeAreaValue} options={this.codeAreaOptions}/>
               </Panel>
             </PanelContainer>)
