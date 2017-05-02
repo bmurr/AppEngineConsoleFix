@@ -1,6 +1,5 @@
 import React from 'react';
-import 'react-virtualized/styles.css';
-import { ArrowKeyStepper, AutoSizer, Column, Table } from 'react-virtualized';
+import { ArrowKeyStepper, AutoSizer, Column, Table, defaultCellRenderer } from 'react-virtualized';
 
 function defaultRowRenderer ({
   className,
@@ -50,6 +49,27 @@ function defaultRowRenderer ({
       {columns}
     </div>
   )
+}
+
+function timestampCellRenderer ({
+  cellData,
+  columnData,
+  columnIndex,
+  dataKey,
+  isScrolling,
+  rowData,
+  rowIndex
+}) {
+  if (cellData == null) {
+    return ''
+  } else {
+    return (
+      <div>
+        <div>{ cellData }</div>
+        <div className="timestamp-subrow">{ rowData['prettyTimestamp'] }</div>
+      </div>
+      )
+  }
 }
 
 
@@ -118,6 +138,10 @@ class HistoryGrid extends React.Component {
     } = this.props;
 
     const columns = data.headers.map((header, index) => {
+      let cellRenderer = defaultCellRenderer;
+      if (index === 0) {
+        cellRenderer = timestampCellRenderer;
+      } 
       return (
         <Column
           className="grid-column grid-cell"
@@ -126,7 +150,8 @@ class HistoryGrid extends React.Component {
           flexShrink={0} 
           headerClassName="grid-header"
           key={header.key}
-          label={header.title} 
+          label={header.title}
+          cellRenderer={cellRenderer}
           width={100}
         />
       );
@@ -156,7 +181,7 @@ class HistoryGrid extends React.Component {
               rowClassName={({index}) => this._rowClassName({index, selectedRowIndex:this.state.selectedRowIndex})} 
               rowCount={data.rows.length} 
               rowGetter={({ index }) => data.rows[index]}
-              rowHeight={21} 
+              rowHeight={30} 
               rowRenderer={defaultRowRenderer}
               scrollToIndex={scrollToRow}
               width={width}

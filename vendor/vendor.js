@@ -1,30 +1,20 @@
-require('codemirror');
-require('codemirror/addon/comment/comment');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/addon/fold/comment-fold');
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter.css');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/indent-fold');
-require('codemirror/addon/hint/anyword-hint');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
-require('codemirror/addon/mode/overlay');
-require('codemirror/keymap/sublime');
-require('codemirror/mode/python/python');
-
 require('immutable');
 
 require('jquery');
 
+require('moment');
+
 require('react');
 require('react-dom');
 
-require('react-spinkit');
-import 'react-spinkit/css/cube-grid.css';
+import AceEditor from 'react-ace';
+import 'brace/mode/python';
+import 'brace/mode/json';
+import 'brace/theme/tomorrow';
+
+
+// import 'react-spinkit/css/cube-grid.css';
 
 require('react-virtualized');
-import 'react-virtualized/styles.css';
 
 

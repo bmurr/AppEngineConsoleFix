@@ -20,6 +20,13 @@
   
 .panel.history-grid-panel{
   .grid-body .grid-column:first-of-type{    
+
+    .timestamp-subrow{
+      color: #c7a99c;
+      line-height: 11px;
+      font-size: 9px;
+    }
+
     border-left: none;
     cursor: pointer;
   }
@@ -28,7 +35,7 @@
 .panel.history-code-panel{
   flex-basis: 70%;
 
-  .CodeMirror{
+  #ace-editor{
     border: none;
     border-top: 1px solid #C9C9C9;
     border-left: 1px solid #C9C9C9;      
@@ -43,3 +50,11 @@
     cursor:pointer;
   }
 }
+
+.loader-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+

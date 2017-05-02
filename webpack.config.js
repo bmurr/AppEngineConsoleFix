@@ -37,7 +37,7 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: [ path.join(__dirname, gulpConfig.srcDirectory) ],
-        loader: 'css-loader'
+        use: ['style-loader', 'css-loader']
       }
 
     ]

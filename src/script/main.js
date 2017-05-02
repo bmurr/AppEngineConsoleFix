@@ -1,85 +1,44 @@
 require('styles/style.scss');
 
-const CodeMirror = require('codemirror');
-require('codemirror/addon/mode/overlay');
-require('codemirror/keymap/sublime');
-require('codemirror/mode/python/python');
+import AceEditor from 'react-ace';
+import 'brace/mode/python';
+import 'brace/mode/json';
+import 'brace/theme/tomorrow';
 
 const Spinner = require('react-spinkit');
 import 'react-spinkit/css/cube-grid.css';
-
-import Immutable from 'immutable';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import HistoryGrid from './HistoryGrid';
-import {humanizeTimestamp, prettifyBytes} from './utils';
+import {prettifyBytes} from './utils';
+import moment from 'moment';
 
 class CodeArea extends React.Component {
 
   constructor(props) {
     super(props);
-    this.defaultCodeMirrorOptions = {
-      "mode": "python",
-      "theme": "default",
-      "indentUnit": 4,
-      "keyMap": "sublime",
-      "lineNumbers": true,
-      "readOnly": true,
-      "gutter": true,
-      "fixedGutter": false,
-      "flattenSpans": false,
-      "extraKeys": {
-        "Ctrl-Space": "autocomplete"
-      },
-      "matchBrackets": true,
-      "dragDrop": false,
-      "viewportMargin": Infinity
-    };
-    this.getValue = this.getValue.bind(this);
-    this.setValue = this.setValue.bind(this);    
-    this.setOptions = this.setOptions.bind(this);
-  }
-
-  getValue(){
-    return this.codemirror.getValue();
-  }
-
-  setValue(value) {
-    if (value) {
-      this.codemirror.setValue(value);
+    this.defaultProps = {
+      height:"100%",
+      width:"100%",
+      readOnly:true,
+      fontSize:12,
+      mode:"python",
+      theme:"tomorrow",        
+      name:"ace-editor",
+      editorProps:{
+        $blockScrolling: true
+      }
     }
-  }  
-
-  setOptions(options) {
-    Object.keys(options).map((key, index) => {
-      this.codemirror.setOption(key, options[key]);
-    });
-  }
-
-  componentDidMount() {
-    let options = Object.assign({}, this.defaultCodeMirrorOptions);
-    options = Object.assign(options, this.props.options);
-    this.codemirror = CodeMirror.fromTextArea(this.textarea, options);
-    this.setValue(this.props.value);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.value !== nextProps.value) {
-      this.setValue(nextProps.value);
-    }
-
-    if (!Immutable.fromJS(this.props.options).equals(Immutable.fromJS(nextProps.options))){
-      this.setOptions(nextProps.options);
-    }
-
+    
   }
 
   render() {
-    return (<textarea ref={(textarea) => {
-      this.textarea = textarea;
-    }}></textarea>)
+    const props = Object.assign({}, this.defaultProps, this.props);
+
+    return (
+      <AceEditor {...props}/>)
   }
 }
 
@@ -88,18 +47,32 @@ class ImportExportPanel extends React.Component {
   constructor(props) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.options = {
+      readOnly: false,
+      mode: 'json',
+      onChange: this.onChange
+    }
+
+    this.state = {
+      value: this.props.value
+    }
   }
 
   handleUpdate() {    
-    this.props.updateHandler(this.codearea.getValue())
+    this.props.updateHandler(this.state.value)
+  }
+
+  onChange (newValue) {
+    this.setState({
+      value: newValue
+    })
   }
 
   render () {
     return (
       <Panel className="import-export-panel">
-        <CodeArea value={this.props.value} options={this.props.options} ref={(codearea) => {
-          this.codearea = codearea;
-        }}/>
+        <CodeArea value={this.state.value} {...this.options}/>
         <div className="controls">
           <button className="button-danger" onClick={this.handleUpdate}>Update local storage.</button>
         </div>
@@ -183,15 +156,6 @@ class HistoryPanel extends React.Component {
     this.getLocalStorage = this.getLocalStorage.bind(this);
     this.setLocalStorage = this.setLocalStorage.bind(this);
 
-    this.codeAreaOptions = {};
-    this.importExportCodeAreaOptions = {
-      readOnly: false,
-      mode: {
-        name: 'javascript', 
-        json: true
-      }
-    }
-
     this.state = this.getInitialState();
   }
 
@@ -229,7 +193,8 @@ class HistoryPanel extends React.Component {
       let history = [];
       Object.keys(historyObject).map(function (key, index) {
         let value = Object.assign({}, historyObject[key]);
-        value.humanizedTimestamp = humanizeTimestamp(value.timestamp);
+        value.humanizedTimestamp = moment(value.timestamp).fromNow();
+        value.prettyTimestamp = moment(value.timestamp).format("D MMMM YYYY HH:mm");
         value.location = value.url.indexOf('localhost') !== -1 ? 'localhost' : 'appengine';
         value.contentLength = value.content.length;
         history.push(value);
@@ -261,8 +226,7 @@ class HistoryPanel extends React.Component {
   getInitialState () {
     return {
       gridPanelVisible: true,
-      codePanelVisible: false,
-      codeAreaOptions: {}    
+      codePanelVisible: false
     }
   }
 
@@ -319,19 +283,22 @@ class HistoryPanel extends React.Component {
           {this.state.importExportPanelVisible ?            
             (
               <PanelContainer>
-                <ImportExportPanel value={this.state.serializedStorage} options={this.importExportCodeAreaOptions} updateHandler={this.setLocalStorage}/>
+                <ImportExportPanel value={this.state.serializedStorage} updateHandler={this.setLocalStorage}/>
               </PanelContainer>
             ) :
             (<PanelContainer>
               <Panel className="history-grid-panel" isVisible={this.state.gridPanelVisible}>
-              { this.state.data ?
+              { 
+                this.state.data ?
                 (<HistoryGrid data={this.state.data} itemSelectedHandler={this.handleHistoryItemSelected}/>) :
-                <div></div>
+                <div className="loader-container">
+                  <Spinner spinnerName='wave' noFadeIn></Spinner>
+                </div>
               }
               </Panel>
               <Panel className="history-code-panel" isVisible={this.state.codePanelVisible}>
                 <a className="close-button" onClick={this.handleCodePanelClose}>×</a>
-                <CodeArea value={this.state.codeAreaValue} options={this.codeAreaOptions}/>
+                <CodeArea value={this.state.codeAreaValue}/>
               </Panel>
             </PanelContainer>)
           }
