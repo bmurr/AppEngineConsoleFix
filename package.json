@@ -28,6 +28,6 @@
     "react-ace": "^4.2.1",
     "react-dom": "^15.4.2",
     "react-spinkit": "^2.1.1",
-    "react-virtualized": "^9.7.3"
+    "react-virtualized": "^9.7.5"
   }
 }
