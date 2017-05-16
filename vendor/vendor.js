@@ -10,7 +10,7 @@ require('react-dom');
 import AceEditor from 'react-ace';
 import 'brace/mode/python';
 import 'brace/mode/json';
-import 'brace/theme/tomorrow';
+import 'brace/theme/eclipse';
 
 
 // import 'react-spinkit/css/cube-grid.css';

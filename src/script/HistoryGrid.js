@@ -1,7 +1,7 @@
 import React from 'react';
-import { ArrowKeyStepper, AutoSizer, Column, Table, defaultCellRenderer } from 'react-virtualized';
+import { ArrowKeyStepper, AutoSizer, Column, Table} from 'react-virtualized';
 
-function defaultRowRenderer ({
+function historyGridRowRenderer ({
   className,
   columns,
   index,
@@ -51,7 +51,7 @@ function defaultRowRenderer ({
   )
 }
 
-function timestampCellRenderer ({
+function historyGridCellRenderer ({
   cellData,
   columnData,
   columnIndex,
@@ -62,13 +62,15 @@ function timestampCellRenderer ({
 }) {
   if (cellData == null) {
     return ''
-  } else {
+  } else if (columnIndex == 0) {
     return (
       <div>
         <div>{ cellData }</div>
         <div className="timestamp-subrow">{ rowData['prettyTimestamp'] }</div>
       </div>
-      )
+    )
+  } else {
+    return String(cellData)
   }
 }
 
@@ -107,7 +109,6 @@ class HistoryGrid extends React.Component {
     return this.props.data.rows[index];
   }
 
-
   setSelectedRowIndex (index) {
     this.setState({
       selectedRowIndex: index
@@ -131,6 +132,15 @@ class HistoryGrid extends React.Component {
     this.selectRow(rowIndex);
   }
 
+  _rowClassName({index, selectedRowIndex}){
+    if (index === -1 ){
+      return 'grid-row grid-header';
+    } else if (index === selectedRowIndex){
+      return 'grid-row selected'
+    }
+    return 'grid-row';
+  }  
+
   render () {
     const {
       data,
@@ -138,10 +148,6 @@ class HistoryGrid extends React.Component {
     } = this.props;
 
     const columns = data.headers.map((header, index) => {
-      let cellRenderer = defaultCellRenderer;
-      if (index === 0) {
-        cellRenderer = timestampCellRenderer;
-      } 
       return (
         <Column
           className="grid-column grid-cell"
@@ -151,7 +157,7 @@ class HistoryGrid extends React.Component {
           headerClassName="grid-header"
           key={header.key}
           label={header.title}
-          cellRenderer={cellRenderer}
+          cellRenderer={historyGridCellRenderer}
           width={100}
         />
       );
@@ -182,7 +188,7 @@ class HistoryGrid extends React.Component {
               rowCount={data.rows.length} 
               rowGetter={({ index }) => data.rows[index]}
               rowHeight={30} 
-              rowRenderer={defaultRowRenderer}
+              rowRenderer={historyGridRowRenderer}
               scrollToIndex={scrollToRow}
               width={width}
             >
@@ -194,14 +200,6 @@ class HistoryGrid extends React.Component {
     )
   }
 
-  _rowClassName({index, selectedRowIndex}){
-    if (index === -1 ){
-      return 'grid-row grid-header';
-    } else if (index === selectedRowIndex){
-      return 'grid-row selected'
-    }
-    return 'grid-row';
-  }
 }
 
 export default HistoryGrid;

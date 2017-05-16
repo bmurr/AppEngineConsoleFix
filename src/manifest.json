@@ -7,7 +7,6 @@
     "version_name": "1.2.0-dev",
 
     "permissions": [
-        "tabs",
         "storage",
         "unlimitedStorage"
     ],
@@ -37,6 +36,8 @@
             "run_at": "document_idle"
         }
     ],
+
+    "content_security_policy": "script-src 'self' 'sha256-w3Yl02OPukTgYxN07rDWHHjHV5OO4YQ80i4s1Rx8ZuU='; object-src 'self'",
 
     "background":{
         "scripts":[

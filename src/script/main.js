@@ -5,7 +5,7 @@ import 'brace/mode/python';
 import 'brace/mode/json';
 import 'brace/theme/tomorrow';
 
-const Spinner = require('react-spinkit');
+import Spinner from 'react-spinkit';
 import 'react-spinkit/css/cube-grid.css';
 
 import React from 'react';
@@ -137,7 +137,7 @@ class ContainerFooter extends React.Component {
         <div className="footer-component">{this.props.data.logCount} records | {this.props.data.usage}</div>
         <div className="footer-component">
           <button onClick={this.props.toggleImportExportPanel}>Import/Export</button>
-          <b>NAMESPACE</b>
+          <b>{this.props.namespace}</b>
         </div>
       </div>
     </div>)
@@ -168,14 +168,14 @@ class HistoryPanel extends React.Component {
   }
 
   getLocalStorage () {
-    const storagePromise = new Promise(function (resolve, reject) {
-      chrome.storage.local.get(null, function (storageObject) {
+    const storagePromise = new Promise((resolve, reject) => {
+      chrome.storage.local.get(this.props.config.namespace, function (storageObject) {
         resolve(storageObject);
       });
     });
 
-    const usagePromise = new Promise(function (resolve, reject) {
-      chrome.storage.local.getBytesInUse(null, function (bytesInUse) {
+    const usagePromise = new Promise((resolve, reject) => {
+      chrome.storage.local.getBytesInUse(this.props.config.namespace, function (bytesInUse) {
         resolve(bytesInUse);
       });
     });
@@ -183,7 +183,7 @@ class HistoryPanel extends React.Component {
     Promise.all([usagePromise, storagePromise]).then((values) => {
       const bytesInUse = values[0];
       const storageObject = values[1];
-      const historyObject = Object.assign({}, storageObject.history);
+      const historyObject = Object.assign({}, storageObject[this.props.config.namespace]);
 
       const summary = {
         logCount: Object.keys(historyObject).length,
@@ -304,7 +304,7 @@ class HistoryPanel extends React.Component {
           }
         
         <ContainerFloatingBar/>
-        <ContainerFooter data={this.state.summary} toggleImportExportPanel={this.toggleImportExportPanel}/>
+        <ContainerFooter data={this.state.summary} namespace={this.props.config.namespace} toggleImportExportPanel={this.toggleImportExportPanel}/>
       </div>)
   }
 }
@@ -320,7 +320,18 @@ class HistoryPanel extends React.Component {
 //Enable React DevTools
 window.React = React;
 
-ReactDOM.render(<HistoryPanel/>, document.getElementById("app"));
+//Wait for config message from our event page before doing anything.
+chrome.runtime.onMessage.addListener(function intializer(request, sender, sendResponse) {
+  if (request && request.config !== undefined) {
+    ReactDOM.render(<HistoryPanel config={request.config}/>, document.getElementById("app"));      
+  }
+  chrome.runtime.onMessage.removeListener(intializer);
+});
+
+
+
+
+
 
 
 

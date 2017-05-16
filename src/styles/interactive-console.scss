@@ -44,10 +44,16 @@
 
 }
 
+.codearea{
+    border: 1px solid rgb(201, 201, 201);
+}
+
 
            
 /*Style the controls above the editor*/
-#controls{
+#menu-bar{
+    display: flex;
+    justify-content: space-between;
     padding: 6px;
     margin-top: 8px;
     border-top: 1px solid #C9C9C9;
@@ -56,6 +62,19 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     user-select: none;
+}
+
+#menu-bar .controls{
+    display: flex;
+    font-size: 20px
+}
+
+#menu-bar .namespace{
+    display: flex;
+    align-content: center;
+    align-items: center;
+    color: #888;
+    font-weight: bold;
 }
 
 #showHistoryButton{

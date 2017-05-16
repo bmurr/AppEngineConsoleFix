@@ -1,22 +1,9 @@
-require('codemirror');
-require('codemirror/addon/comment/comment');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/addon/fold/comment-fold');
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter.css');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/indent-fold');
-require('codemirror/addon/hint/anyword-hint');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
-require('codemirror/addon/mode/overlay');
-require('codemirror/keymap/sublime');
-require('codemirror/mode/python/python');
+import ace from 'brace';
+import 'brace/mode/python';
+import 'brace/mode/json';
+import 'brace/theme/eclipse';
 
-var $ = require('jquery');
-var CodeMirror = require('codemirror');
-
+import $ from 'jquery';
 
 var AppEngineConsoleFix = function () {
   var self = this;
@@ -36,16 +23,25 @@ var AppEngineConsoleFix = function () {
       return $('#code')[0] || $('#code_text')[0];
   };
 
+  self.getNamespace = function() {
+    var appEngineConsoleElement = $('body #ae-appbar-lrg h1')[0];
+    var localConsoleElement = $('body #leftnavc .sidebarHolder h4 a')[0];
+    var $element = $(appEngineConsoleElement || localConsoleElement);
+    var namespace = $element.text().split(' ')[0].trim();
+    return namespace || 'default';
+  }
+
   self.openHistoryPanel = function(){
       var request = {
-          action: 'openHistoryPanel'
+          action: 'openHistoryPanel',
+          namespace: self.namespace
       };
       chrome.runtime.sendMessage(request);
   };
 
-  self.loadHistory = function () {
+  self.loadHistory = function (namespace) {
       self.getHistoryUsage();
-      chrome.storage.local.get('history', function (history_object) {
+      chrome.storage.local.get(namespace, function (history_object) {
           console.log(history_object);
       });
   };
@@ -56,12 +52,12 @@ var AppEngineConsoleFix = function () {
       });
   };
 
-  self.saveHistory = function (content) {
+  self.saveHistory = function (content, namespace) {
       var hostname = window.location.hostname;
       var url = window.location.href;
       var timestamp = (new Date()).toISOString();
 
-      chrome.storage.local.get('history', function (storage) {
+      chrome.storage.local.get(namespace, function (storage) {
           var entry = {
               content: content,
               url: url,
@@ -69,10 +65,10 @@ var AppEngineConsoleFix = function () {
           };
 
           if (!$.isEmptyObject(storage)) {
-              storage.history[timestamp] = entry;
+              storage[namespace][timestamp] = entry;
           } else {
-              storage['history'] = {};
-              storage['history'][timestamp] = entry;
+              storage[namespace] = {};
+              storage[namespace][timestamp] = entry;
           }
 
           chrome.storage.local.set(storage);
@@ -100,9 +96,14 @@ var AppEngineConsoleFix = function () {
       $('#output').css('height', '1000px');
 
       //Add controls
-      var template = ['<div id="controls" style="font-size: 20px">',
-                      '    <div style="float:left"><a href="javascript:void(0)" id="showWhitespaceButton" title="Show Whitespace"><i class="ion-ios-eye-outline"></i></a></div>',
-                      '    <div><a href="javascript:void(0)" id="showHistoryButton" title="Show History"><i class="ion-clock"></i></a></div>',
+      var template = ['<div id="menu-bar">',
+                      '    <div class="controls">',
+                      '        <div style="float:left"><a href="javascript:void(0)" id="showWhitespaceButton" title="Show Whitespace"><i class="ion-ios-eye-outline"></i></a></div>',
+                      '        <div><a href="javascript:void(0)" id="showHistoryButton" title="Show History"><i class="ion-clock"></i></a></div>',
+                      '    </div>',
+                      '    <div class="namespace">',
+                      `       ${self.namespace}`,
+                      '    </div>',                      
                       '</div>'];
 
       $(template.join('')).insertBefore($(inputarea));
@@ -111,11 +112,11 @@ var AppEngineConsoleFix = function () {
           var checked = !($(this).hasClass('checked'));
 
           if (checked) {
-              self.codearea.setOption('mode', 'pythonWS');
+              self.codearea.setOption("showInvisibles", true);
               $(this).addClass('checked');
           }
           else {
-              self.codearea.setOption('mode', 'python');
+              self.codearea.setOption("showInvisibles", false);
               $(this).removeClass('checked');
           }
       });
@@ -127,94 +128,68 @@ var AppEngineConsoleFix = function () {
   };
 
   AppEngineConsoleFix.createCodeArea = function () {
-      //Replace textarea with codemirror editor
-  
-      var inputarea = self.getInputArea();
+    //Replace textarea with codemirror editor
 
-      var codeConfigOptions = {
-          // value (string)
-          "mode": {
-            name: "python"
-          },
-          // "theme": "default",
-          "indentUnit": 4,
-          // smartIndent (boolean)
-          // tabSize (integer)
-          // indentWithTabs (boolean)
-          // electricChars (boolean)
-          // autoClearEmptyLines (boolean)
-          "keyMap": "sublime",
-          // extraKeys (object)
-          // lineWrapping (boolean)
-          "lineNumbers": true,
-          // firstLineNumber (integer)
-          // lineNumberFormatter (function(integer))
-          // "gutter": true,
-          // "fixedGutter": true,
-          "flattenSpans": false,
-          "extraKeys": {
-              "Ctrl-Space": "autocomplete",
-              "Tab": betterTab
-          },
-          // readOnly (boolean)
-          // onChange (function)
-          // onCursorActivity (function)
-          // onViewportChange (function)
-          // onGutterClick (function)
-          // onScroll (function)
-          // onUpdate (function)
-          "matchBrackets": true,
-          // cursorBlinkRate (number)
-          // pollInterval (number)
-          // undoDepth (integer)
-          // tabindex (integer)
-          // autofocus (boolean)
-          "dragDrop": false
-          // onDragEvent (function)
-          // onKeyEvent (function)
-      };
-      CodeMirror.commands.autocomplete = function (cm) {
-          CodeMirror.showHint(cm, CodeMirror.hint.anyword);
-      };
-      CodeMirror.defineMode("pythonWS", function (config, parserConfig) {
-          var spaceOverlay = {
-              token: function (stream, state) {
-                  var ch;
-                  while ((ch = stream.next()) != null) {
-                      if (ch == ' ') {
-                          return 'space';
-                      }
-                      if (ch == '\t') {
-                          return 'ctab';
-                      }
-                      return null;
-                  }
-              }
-          };
-          return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || 'python'), spaceOverlay);
-      });
+    var textarea = $(self.getInputArea());
 
-      self.codearea = CodeMirror.fromTextArea(inputarea, codeConfigOptions);
+    var editDiv = $('<div>', {
+        position: 'absolute',
+        width: "100%",
+        height: textarea.height(),        
+        'class': 'codearea'
+    }).css('min-height', `${textarea.height()}px`).insertBefore(textarea);
 
-      // one is for localhost, other for AppEngine console
-      var submit_button = $('#execute_button').length ? $('#execute_button') : $('#submitbutton') ;
-      var form = submit_button.closest('form');
+    var editor = ace.edit(editDiv[0]);
+    self.codearea = editor;
 
-      submit_button.click(function (event)
-      {
-          //Needed to prevent stale values being submitted in localhost
-          self.codearea.save();
-      });
+    var heightUpdateFunction = function() {
 
-      form.submit(function (event) {
-          if (self.shouldSave){
-              self.saveHistory(self.codearea.getValue());    
-          }                
-      });
+      // http://stackoverflow.com/questions/11584061/
+      var newHeight =
+                editor.getSession().getScreenLength()
+                * editor.renderer.lineHeight
+                + editor.renderer.scrollBar.getWidth();
+
+      var minHeight = $(editDiv[0]).css('min-height');
+      if (parseInt(minHeight) < newHeight){
+        $(editDiv[0]).height(`${newHeight.toString()}px`);  
+      } else {
+        $(editDiv[0]).height(minHeight);
+      }
+      
+
+      // This call is required for the editor to fix all of
+      // its inner structure for adapting to a change in size
+      editor.resize();
+    };
+
+    textarea.hide();
+
+    editor.getSession().setValue(textarea.val());
+    editor.getSession().setMode('ace/mode/python');
+    editor.setTheme('ace/theme/eclipse');
+
+    // Whenever a change happens inside the ACE editor, update
+    // the size again
+    editor.getSession().on('change', heightUpdateFunction);
+    
+    
+    // // one is for localhost, other for AppEngine console
+    var submit_button = $('#execute_button').length ? $('#execute_button') : $('#submitbutton') ;
+    var form = submit_button.closest('form');
+
+    //Needed to prevent stale values being submitted in localhost
+    submit_button.click(function (event)
+    {       
+        textarea.val(editor.getSession().getValue());
+    });
+
+    // form.submit(function (event) {
+    //   self.saveHistory(self.codearea.getValue(), self.namespace);    
+    // });
   };
 
-  // Let's only save Tethras stuff
-  self.shouldSave = $(document).text().toLowerCase().indexOf('tethras') !== -1;
+  self.namespace = self.getNamespace();
 
   $('document').ready(function () {
       //We don't want to run in the output iframe.
