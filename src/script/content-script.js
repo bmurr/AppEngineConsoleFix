@@ -4,20 +4,12 @@ import 'brace/mode/json';
 import 'brace/theme/eclipse';
 
 import $ from 'jquery';
+import 'font-awesome/css/font-awesome.css';
 
 var AppEngineConsoleFix = function () {
   var self = this;
   window.AppEngineConsoleFix = self;
   window.chrome = chrome;
-
-  function betterTab(cm) {
-      if (cm.somethingSelected()) {
-          cm.indentSelection('add');
-      } else {
-          cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
-              new Array(cm.getOption('indentUnit') + 1).join(" "), 'end', '+input');
-      }
-  }
 
   self.getInputArea = function () {
       return $('#code')[0] || $('#code_text')[0];
@@ -98,8 +90,8 @@ var AppEngineConsoleFix = function () {
       //Add controls
       var template = ['<div id="menu-bar">',
                       '    <div class="controls">',
-                      '        <div style="float:left"><a href="javascript:void(0)" id="showWhitespaceButton" title="Show Whitespace"><i class="ion-ios-eye-outline"></i></a></div>',
-                      '        <div><a href="javascript:void(0)" id="showHistoryButton" title="Show History"><i class="ion-clock"></i></a></div>',
+                      '        <div style="float:left"><a href="javascript:void(0)" id="showWhitespaceButton" title="Show Whitespace"><i class="fa fa-eye"></i></a></div>',
+                      '        <div><a href="javascript:void(0)" id="showHistoryButton" title="Show History"><i class="fa fa-history"></i></a></div>',
                       '    </div>',
                       '    <div class="namespace">',
                       `       ${self.namespace}`,

@@ -8,9 +8,9 @@ module.exports = {
   cache: true,
   
   entry: {
-    'content-script': 'script/content-script.js',
-    'event-page': 'script/event-page.js',
-    main: 'script/main.js'
+    'content-script': ['script/content-script.js'],
+    'event-page': ['script/event-page.js'],
+    main: ['script/main.js']
   },
   output: {
     filename: 'script/[name].js'    
@@ -38,8 +38,7 @@ module.exports = {
         test: /\.css$/,
         exclude: [ path.join(__dirname, gulpConfig.srcDirectory) ],
         use: ['style-loader', 'css-loader']
-      }
-
+      }   
     ]
   },
   resolve: {

@@ -26,10 +26,6 @@
                 "script/content-script.js"
             ],
             "css": [
-                "lib/codemirror/lib/codemirror.css",
-                "lib/codemirror/theme/lesser-dark.css",
-                "lib/codemirror/addon/hint/show-hint.css",
-                "lib/ionicons/ionicons.min.css",
                 "styles/style.css"
             ],
             "all_frames": true,
@@ -37,16 +33,14 @@
         }
     ],
 
-    "content_security_policy": "script-src 'self' 'sha256-w3Yl02OPukTgYxN07rDWHHjHV5OO4YQ80i4s1Rx8ZuU='; object-src 'self'",
-
+    "content_security_policy": "script-src 'self'; object-src 'self'",
+    "web_accessible_resources": [
+        "script/fonts/*"
+    ],
     "background":{
         "scripts":[
             "script/event-page.js"
         ],
         "persistent": false
-    },
-
-    "web_accessible_resources": [
-        "lib/ionicons/*"
-    ]
+    }
 }

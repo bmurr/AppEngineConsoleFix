@@ -169,13 +169,13 @@ class HistoryPanel extends React.Component {
 
   getLocalStorage () {
     const storagePromise = new Promise((resolve, reject) => {
-      chrome.storage.local.get(this.props.config.namespace, function (storageObject) {
+      chrome.storage.local.get(null, function (storageObject) {
         resolve(storageObject);
       });
     });
 
     const usagePromise = new Promise((resolve, reject) => {
-      chrome.storage.local.getBytesInUse(this.props.config.namespace, function (bytesInUse) {
+      chrome.storage.local.getBytesInUse(null, function (bytesInUse) {
         resolve(bytesInUse);
       });
     });
@@ -183,7 +183,7 @@ class HistoryPanel extends React.Component {
     Promise.all([usagePromise, storagePromise]).then((values) => {
       const bytesInUse = values[0];
       const storageObject = values[1];
-      const historyObject = Object.assign({}, storageObject[this.props.config.namespace]);
+      const historyObject = Object.assign({}, storageObject[this.state.namespace]);
 
       const summary = {
         logCount: Object.keys(historyObject).length,
@@ -226,7 +226,8 @@ class HistoryPanel extends React.Component {
   getInitialState () {
     return {
       gridPanelVisible: true,
-      codePanelVisible: false
+      codePanelVisible: false,
+      namespace: this.props.config.namespace
     }
   }
 
@@ -304,7 +305,7 @@ class HistoryPanel extends React.Component {
           }
         
         <ContainerFloatingBar/>
-        <ContainerFooter data={this.state.summary} namespace={this.props.config.namespace} toggleImportExportPanel={this.toggleImportExportPanel}/>
+        <ContainerFooter data={this.state.summary} namespace={this.state.namespace} toggleImportExportPanel={this.toggleImportExportPanel}/>
       </div>)
   }
 }

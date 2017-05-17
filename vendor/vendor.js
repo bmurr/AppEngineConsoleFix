@@ -1,11 +1,11 @@
-require('immutable');
+import 'immutable';
 
-require('jquery');
+import 'jquery';
 
-require('moment');
+import 'moment';
 
-require('react');
-require('react-dom');
+import 'react';
+import 'react-dom';
 
 import AceEditor from 'react-ace';
 import 'brace/mode/python';
@@ -14,7 +14,8 @@ import 'brace/theme/eclipse';
 
 
 // import 'react-spinkit/css/cube-grid.css';
+import 'font-awesome/css/font-awesome.css';
 
-require('react-virtualized');
+import 'react-virtualized';
 
 

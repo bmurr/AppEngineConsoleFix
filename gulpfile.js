@@ -30,6 +30,7 @@ gulp.task('build:vendor', function(){
       output: {
         // The output bundle file, also called vendor.js
         path: path.join(__dirname, gulpConfig.buildDirectory, 'script'),
+        publicPath: 'chrome-extension://lickplgkkppdanbcigejmkconmpcmien/script/',
         filename: '[name].js',
         library: '[name]'
       },
@@ -39,7 +40,20 @@ gulp.task('build:vendor', function(){
             test: /\.css$/,
             exclude: [ path.join(__dirname, gulpConfig.srcDirectory) ],
             use: ['style-loader', 'css-loader']
-          }
+          },
+          {
+            test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
+            exclude: [ path.join(__dirname, gulpConfig.srcDirectory) ],
+            use: [
+              {
+                loader: 'file-loader',
+                options: {
+                  outputPath: 'fonts/',
+                  publicPath: false
+                }
+              }
+            ]        
+          }         
 
         ]
       },
@@ -89,13 +103,6 @@ gulp.task('build', function(){
         .pipe(gulp.dest(gulpConfig.buildDirectory))
         .on('end', resolve);
     }), 
-
-    //Copy across our whole lib directory recursively
-    new Promise(function(resolve, reject){
-      gulp.src(path.join(gulpConfig.libDirectory, '**/*'), {base: '.'})
-        .pipe(gulp.dest(path.join(gulpConfig.buildDirectory)))
-        .on('end', resolve);   
-    }),
 
     new Promise(function(resolve, reject){
       gulp.src(path.join(gulpConfig.srcDirectory, '*.html'))

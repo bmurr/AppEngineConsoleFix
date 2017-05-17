@@ -1,55 +1,10 @@
 /*
     Editor CSS
 */
-@font-face {
-  font-family: 'Ionicons';
-  font-style: normal;
-  font-weight: normal;
-  src: url('chrome-extension://lickplgkkppdanbcigejmkconmpcmien/lib/ionicons/ionicons.woff') format('woff');
-}
-
-/*Style how visible tabs appear.*/
-.cm-ctab {
-    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
-    background-position: right;
-    background-repeat: no-repeat;
-}
-
-/*Style how visible spaces appear.*/
-.cm-space {
-    background: url('data:image/gif;base64,R0lGODlhFAAMAKIAAPoAAP6fn/6xsf/i4v/l5f/19f///wAAACH5BAkAAAYALAAAAAAUAAwAAAgrAA0IHEiwoMGDCBMqXMiwoUOCAwIEGPDQgAAAAAJUvJixYsQAAiqKHFkxIAA7');
-    background-position: 57% 46%;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-}
-
-.CodeMirror-scroll {
-    min-height: 200px;
-    height: 100%;
-    overflow-y: hidden;
-    overflow-x: auto;
-}
-
-.CodeMirror{
-    height: 100%;
-    border: 1px solid #C9C9C9;
-
-    .CodeMirror-gutters{
-        height: 100% !important;
-    }
-
-    .CodeMirror-gutter-wrapper {
-        position: absolute;
-    }
-
-}
-
 .codearea{
     border: 1px solid rgb(201, 201, 201);
 }
-
-
-           
+          
 /*Style the controls above the editor*/
 #menu-bar{
     display: flex;
