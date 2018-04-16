@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { ArrowKeyStepper, AutoSizer, Column, Table} from 'react-virtualized';
 
 function historyGridRowRenderer ({
@@ -106,7 +107,7 @@ class HistoryGrid extends React.Component {
   }
 
   rowGetter (index) {
-    return this.props.data.rows[index];
+    return this.props.dataTable.rows[index];
   }
 
   setSelectedRowIndex (index) {
@@ -143,22 +144,24 @@ class HistoryGrid extends React.Component {
 
   render () {
     const {
-      data,
+      dataTable,
       ...other
     } = this.props;
 
-    const columns = data.headers.map((header, index) => {
+    const columns = dataTable.headers.map((header, index) => {
+      const widths = [20, 25, 10, 5, 40];
+      const widthPercentages = widths.map((i) => {return i/100.0*900});
       return (
         <Column
           className="grid-column grid-cell"
           dataKey={header.key}
-          flexGrow={1}
+          flexGrow={0}
           flexShrink={0} 
           headerClassName="grid-header"
           key={header.key}
           label={header.title}
           cellRenderer={historyGridCellRenderer}
-          width={100}
+          width={widthPercentages[index]}
         />
       );
     });
@@ -166,14 +169,14 @@ class HistoryGrid extends React.Component {
     return (
       <HookedArrowKeyStepper
         className="grid-arrow-key-stepper"
-        columnCount={data.headers.length}
+        columnCount={dataTable.headers.length}
         onScroll={this.handleArrowScroll}
         mode="cells"
         ref={(c) => this.stepper = c}
-        rowCount={data.rows.length}
+        rowCount={dataTable.rows.length}
       >
         {({ onSectionRendered, scrollToColumn, scrollToRow }) => (
-          <AutoSizer disableHeight>
+          <AutoSizer disableHeight ref={(c) => this.autosizer = c}>
           {({ height, width }) => (
             <Table
               className="grid"
@@ -185,8 +188,8 @@ class HistoryGrid extends React.Component {
               onRowsRendered={({...params}) => onSectionRendered({...params})}
               ref={(c) => this.table = c}
               rowClassName={({index}) => this._rowClassName({index, selectedRowIndex:this.state.selectedRowIndex})} 
-              rowCount={data.rows.length} 
-              rowGetter={({ index }) => data.rows[index]}
+              rowCount={dataTable.rows.length} 
+              rowGetter={({ index }) => dataTable.rows[index]}
               rowHeight={30} 
               rowRenderer={historyGridRowRenderer}
               scrollToIndex={scrollToRow}

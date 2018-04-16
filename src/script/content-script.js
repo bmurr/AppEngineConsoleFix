@@ -176,9 +176,9 @@ var AppEngineConsoleFix = function () {
         textarea.val(editor.getSession().getValue());
     });
 
-    // form.submit(function (event) {
-    //   self.saveHistory(self.codearea.getValue(), self.namespace);    
-    // });
+    form.submit(function (event) {
+      self.saveHistory(self.codearea.getValue(), self.namespace);    
+    });
   };
 
   self.namespace = self.getNamespace();

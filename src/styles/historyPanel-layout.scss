@@ -42,9 +42,29 @@ $main-container-background-color: #ffffff;
 
   }
   
-  .floating-bar{    
-    position: absolute;
-    top: 32%;
+  .search-bar{    
+    display: flex;
     width: 100%;
-  } 
+  }
+
+  .search-bar{
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    background-color: #eee;
+    border-top: 1px solid #ddd;
+    z-index: 999;    
+
+    input {
+      flex: 1 1 auto;
+      border: 1px solid #ccc;
+
+      &:focus{
+        outline: none;
+        border: 1px solid #68d;
+      }
+    }
+}
+
+
 }
