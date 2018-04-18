@@ -1,3 +1,5 @@
+import 'react-devtools'
+
 require('styles/style.scss');
 
 import React from 'react';

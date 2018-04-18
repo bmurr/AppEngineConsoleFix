@@ -13,7 +13,7 @@
     "gulp-debug": "^3.1.0",
     "gulp-util": "^3.0.8",
     "node-sass": "^4.8.3",
-    "react-devtools": "^2.0.12",
+    "react-devtools": "^3.2.1",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.16.1",
     "webpack": "^2.5.1",
