@@ -2,6 +2,7 @@ import ace from 'brace';
 import 'brace/mode/python';
 import 'brace/mode/json';
 import 'brace/theme/eclipse';
+import 'brace/ext/language_tools';
 
 import $ from 'jquery';
 import 'font-awesome/css/font-awesome.css';
@@ -160,6 +161,12 @@ var AppEngineConsoleFix = function () {
     editor.getSession().setValue(textarea.val());
     editor.getSession().setMode('ace/mode/python');
     editor.setTheme('ace/theme/eclipse');
+
+    editor.setOptions({
+        enableBasicAutocompletion: true, // Ctrl-Space toggles the menu
+        enableLiveAutocompletion: true, // Always gives autocompletion
+        showLineNumbers: true,
+    });
 
     // Whenever a change happens inside the ACE editor, update
     // the size again
