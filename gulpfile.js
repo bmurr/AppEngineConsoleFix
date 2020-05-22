@@ -15,7 +15,7 @@ function clean() {
   gutil.log('Deleting all generated files.');
   return del([
     gulpConfig.buildDirectory,
-    path.join(gulpConfig.vendorDirectory, 'vendor-manifest.json')
+    path.join(gulpConfig.vendorDirectory, 'vendor-manifest.json'),
   ]);
 }
 
@@ -42,7 +42,7 @@ function build() {
         .src(path.join(gulpConfig.srcDirectory, 'manifest.json'))
         .pipe(gulp.dest(gulpConfig.buildDirectory))
         .on('end', resolve);
-    })
+    }),
   ];
 
   //Wait for everything to be done
@@ -56,21 +56,21 @@ function buildVendor() {
 
   var vendorConfig = {
     entry: {
-      vendor: ['vendor.js']
+      vendor: ['vendor.js'],
     },
     output: {
       // The output bundle file, also called vendor.js
       path: path.join(__dirname, gulpConfig.buildDirectory, 'script'),
       publicPath: 'chrome-extension://lickplgkkppdanbcigejmkconmpcmien/script/',
       filename: '[name].js',
-      library: '[name]'
+      library: '[name]',
     },
     module: {
       loaders: [
         {
           test: /\.css$/,
           exclude: [path.join(__dirname, gulpConfig.srcDirectory)],
-          use: ['style-loader', 'css-loader']
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.(woff|woff2|eot|ttf|otf|svg)$/,
@@ -80,12 +80,13 @@ function buildVendor() {
               loader: 'file-loader',
               options: {
                 outputPath: 'fonts/',
-                publicPath: false
-              }
-            }
-          ]
-        }
-      ]
+                publicPath:
+                  'chrome-extension://lickplgkkppdanbcigejmkconmpcmien/script/',
+              },
+            },
+          ],
+        },
+      ],
     },
     plugins: [
       new webpack.DllPlugin({
@@ -96,16 +97,16 @@ function buildVendor() {
           '[name]-manifest.json'
         ),
         name: '[name]',
-        context: path.join(__dirname, gulpConfig.vendorDirectory)
-      })
+        context: path.join(__dirname, gulpConfig.vendorDirectory),
+      }),
     ],
     resolve: {
       // Tell webpack where to look for our initial vendor.js file
       modules: [
         path.join(__dirname, gulpConfig.vendorDirectory),
-        'node_modules'
-      ]
-    }
+        'node_modules',
+      ],
+    },
   };
 
   var bundleJS = new Promise(function(resolve, reject) {
@@ -114,7 +115,7 @@ function buildVendor() {
       gutil.log(
         '[webpack]',
         stats.toString({
-          colors: gutil.colors.supportsColor
+          colors: gutil.colors.supportsColor,
         })
       );
       resolve();

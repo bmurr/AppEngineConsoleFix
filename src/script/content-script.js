@@ -33,7 +33,7 @@ var AppEngineConsoleFix = function() {
   self.openHistoryPanel = function() {
     var request = {
       action: 'openHistoryPanel',
-      namespace: self.namespace
+      namespace: self.namespace,
     };
     chrome.runtime.sendMessage(request);
   };
@@ -51,7 +51,7 @@ var AppEngineConsoleFix = function() {
         [
           'AppEngine Console Extension history is using ',
           bytesInUse,
-          ' bytes of storage.'
+          ' bytes of storage.',
         ].join('')
       );
     });
@@ -66,7 +66,7 @@ var AppEngineConsoleFix = function() {
       var entry = {
         content: content,
         url: url,
-        timestamp: timestamp
+        timestamp: timestamp,
       };
 
       if (!$.isEmptyObject(storage)) {
@@ -163,7 +163,7 @@ var AppEngineConsoleFix = function() {
       '    <div class="namespace">',
       `       ${self.namespace}`,
       '    </div>',
-      '</div>'
+      '</div>',
     ];
 
     $(template.join('')).insertBefore($(inputarea));
@@ -189,13 +189,24 @@ var AppEngineConsoleFix = function() {
   AppEngineConsoleFix.createCodeArea = function() {
     //Replace textarea with codemirror editor
 
+    if (self.in_localhost) {
+      fetch('http://localhost:8000/templates/console.js').then((response) => {
+        response.text().then((scriptText) => {
+          let xsrfRegex = RegExp(
+            /('|")xsrf_token\1\s*:\s*('|")(?<XSRF>\w+)\2/gm
+          );
+          self.localXSRFToken = xsrfRegex.exec(scriptText).groups.XSRF;
+        });
+      });
+    }
+
     var textarea = $(self.getInputArea());
 
     var editDiv = $('<div>', {
       position: 'absolute',
       width: '100%',
       height: textarea.height(),
-      class: 'codearea'
+      class: 'codearea',
     })
       .css('min-height', `${textarea.height()}px`)
       .insertBefore(textarea);
@@ -230,7 +241,7 @@ var AppEngineConsoleFix = function() {
     editor.setOptions({
       enableBasicAutocompletion: true, // Ctrl-Space toggles the menu
       enableLiveAutocompletion: true, // Always gives autocompletion
-      showLineNumbers: true
+      showLineNumbers: true,
     });
 
     // Whenever a change happens inside the ACE editor, update
@@ -274,13 +285,13 @@ var AppEngineConsoleFix = function() {
           data = {
             code: $('#code_text').val(),
             module_name: $('#module_name').val(),
-            xsrf_token: 'QWpQIkCCDH'
+            xsrf_token: self.localXSRFToken,
           };
           executionURL = window.location.href;
         } else if (self.in_appspot_console) {
           data = {
             code: $('#code').val(),
-            xsrf_token: form.find('input[name="xsrf_token"]').attr('value')
+            xsrf_token: form.find('input[name="xsrf_token"]').attr('value'),
           };
           executionURL = window.location.href + '/execute';
         }
@@ -290,11 +301,9 @@ var AppEngineConsoleFix = function() {
         var request = $.ajax({
           url: executionURL,
           type: 'POST',
-          data: data
+          data: data,
         })
           .done(function(data, textStatus, jqXHR) {
-            self.stopUpdatingExecutionTimer();
-
             if (self.in_localhost) {
               $('#output').text(data);
             } else if (self.in_appspot_console) {
@@ -321,6 +330,9 @@ var AppEngineConsoleFix = function() {
               $('#output').attr('srcdoc', data);
             }
             self.enableExecuteButton();
+          })
+          .always(function() {
+            self.stopUpdatingExecutionTimer();
           });
         return false;
       }
