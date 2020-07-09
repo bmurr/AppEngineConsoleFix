@@ -6,10 +6,7 @@
     "version": "1.2.0",
     "version_name": "1.2.0-dev",
 
-    "permissions": [
-        "storage",
-        "unlimitedStorage"
-    ],
+    "permissions": ["storage", "unlimitedStorage"],
 
     "content_scripts": [
         {
@@ -17,30 +14,21 @@
                 "*://appengine.google.com/*Interactive*Console*",
                 "*://appengine.google.com/*console*",
                 "*://*.appspot.com/console*",
-                "*://*.appspot.com/_ah/admin/interactive*",
+                "*://*.appspot.com/*admin/interactive*",
                 "*://localhost:*/console*",
-                "*://localhost:*/_ah/admin/interactive*"
+                "*://localhost:*/*admin/interactive*"
             ],
-            "js": [
-                "script/vendor.js",
-                "script/content-script.js"
-            ],
-            "css": [
-                "styles/style.css"
-            ],
+            "js": ["script/vendor.js", "script/content-script.js"],
+            "css": ["styles/style.css"],
             "all_frames": true,
             "run_at": "document_idle"
         }
     ],
 
     "content_security_policy": "script-src 'self'; object-src 'self'",
-    "web_accessible_resources": [
-        "script/fonts/*"
-    ],
-    "background":{
-        "scripts":[
-            "script/event-page.js"
-        ],
+    "web_accessible_resources": ["script/fonts/*"],
+    "background": {
+        "scripts": ["script/event-page.js"],
         "persistent": false
     }
 }
