@@ -8,29 +8,26 @@ import $ from 'jquery';
 import moment from 'moment';
 import 'font-awesome/css/font-awesome.css';
 
-var AppEngineConsoleFix = function() {
+var AppEngineConsoleFix = function () {
   var self = this;
   window.AppEngineConsoleFix = self;
 
   window.chrome = chrome;
   self.timers = {};
 
-  self.getInputArea = function() {
+  self.getInputArea = function () {
     return $('#code')[0] || $('#code_text')[0];
   };
 
-  self.getNamespace = function() {
+  self.getNamespace = function () {
     var appEngineConsoleElement = $('body #ae-appbar-lrg h1')[0];
     var localConsoleElement = $('body #leftnavc .sidebarHolder h4 a')[0];
     var $element = $(appEngineConsoleElement || localConsoleElement);
-    var namespace = $element
-      .text()
-      .split(' ')[0]
-      .trim();
+    var namespace = $element.text().split(' ')[0].trim();
     return namespace || 'default';
   };
 
-  self.openHistoryPanel = function() {
+  self.openHistoryPanel = function () {
     var request = {
       action: 'openHistoryPanel',
       namespace: self.namespace,
@@ -38,15 +35,15 @@ var AppEngineConsoleFix = function() {
     chrome.runtime.sendMessage(request);
   };
 
-  self.loadHistory = function(namespace) {
+  self.loadHistory = function (namespace) {
     self.getHistoryUsage();
-    chrome.storage.local.get(namespace, function(history_object) {
+    chrome.storage.local.get(namespace, function (history_object) {
       console.log(history_object);
     });
   };
 
-  self.getHistoryUsage = function() {
-    chrome.storage.local.getBytesInUse(null, function(bytesInUse) {
+  self.getHistoryUsage = function () {
+    chrome.storage.local.getBytesInUse(null, function (bytesInUse) {
       console.log(
         [
           'AppEngine Console Extension history is using ',
@@ -57,12 +54,12 @@ var AppEngineConsoleFix = function() {
     });
   };
 
-  self.saveHistory = function(content, namespace) {
+  self.saveHistory = function (content, namespace) {
     var hostname = window.location.hostname;
     var url = window.location.href;
     var timestamp = new Date().toISOString();
 
-    chrome.storage.local.get(namespace, function(storage) {
+    chrome.storage.local.get(namespace, function (storage) {
       var entry = {
         content: content,
         url: url,
@@ -80,11 +77,11 @@ var AppEngineConsoleFix = function() {
     });
   };
 
-  self.clearHistory = function() {
+  self.clearHistory = function () {
     chrome.storage.local.clear();
   };
 
-  self.startUpdatingExecutionTimer = function() {
+  self.startUpdatingExecutionTimer = function () {
     self.timers.executionInterval = window.setInterval(() => {
       let timeElapsed = new Date() - self.timers.lastExecutedAt;
       self.timers.timeElapsed = timeElapsed;
@@ -98,7 +95,7 @@ var AppEngineConsoleFix = function() {
     $('.executionDetails .running').show();
   };
 
-  self.updateTimeElapsedLabelInt = function(timeElapsed) {
+  self.updateTimeElapsedLabelInt = function (timeElapsed) {
     $('.executionDetails .complete .elapsed').text(
       `Last run: ${(timeElapsed / 1000).toFixed(1)}s at ${moment(
         self.timers.lastExecutedAt
@@ -106,7 +103,7 @@ var AppEngineConsoleFix = function() {
     );
   };
 
-  self.updateTimeElapsedLabelString = function(timeElapsed) {
+  self.updateTimeElapsedLabelString = function (timeElapsed) {
     $('.executionDetails .complete .elapsed').text(
       `Last run: ${timeElapsed} at ${moment(self.timers.lastExecutedAt).format(
         'ddd Do MMM YYYY HH:mm:SSZZ'
@@ -114,7 +111,7 @@ var AppEngineConsoleFix = function() {
     );
   };
 
-  self.stopUpdatingExecutionTimer = function() {
+  self.stopUpdatingExecutionTimer = function () {
     window.clearInterval(self.timers.executionInterval);
     let timeElapsed = new Date() - self.timers.lastExecutedAt;
     self.timers.timeElapsed = timeElapsed;
@@ -123,23 +120,21 @@ var AppEngineConsoleFix = function() {
     $('.executionDetails .running').hide();
   };
 
-  self.enableExecuteButton = function() {
+  self.enableExecuteButton = function () {
     $('#execute_button').removeAttr('disabled');
     $('#execute_button').removeClass('disabled');
   };
 
-  self.disableExecuteButton = function() {
+  self.disableExecuteButton = function () {
     $('#execute_button').attr('disabled', 'disabled');
     $('#execute_button').addClass('disabled');
   };
 
-  AppEngineConsoleFix.editTable = function() {
+  AppEngineConsoleFix.editTable = function () {
     var inputarea = self.getInputArea();
     //Make the textareas rows instead of columns.
     $('#console tbody').prepend($('#code').parent());
-    $('#code')
-      .parent()
-      .wrap('<tr>');
+    $('#code').parent().wrap('<tr>');
 
     //Move the 'Run Program' button to the top
     $('#submitbutton')
@@ -168,7 +163,7 @@ var AppEngineConsoleFix = function() {
 
     $(template.join('')).insertBefore($(inputarea));
 
-    $('#showWhitespaceButton').click(function() {
+    $('#showWhitespaceButton').click(function () {
       var checked = !$(this).hasClass('checked');
 
       if (checked) {
@@ -180,13 +175,13 @@ var AppEngineConsoleFix = function() {
       }
     });
 
-    $('#showHistoryButton').click(function() {
+    $('#showHistoryButton').click(function () {
       self.openHistoryPanel();
       //                self.clearHistory();
     });
   };
 
-  AppEngineConsoleFix.createCodeArea = function() {
+  AppEngineConsoleFix.createCodeArea = function () {
     //Replace textarea with codemirror editor
 
     if (self.in_localhost) {
@@ -214,7 +209,7 @@ var AppEngineConsoleFix = function() {
     var editor = ace.edit(editDiv[0]);
     self.codearea = editor;
 
-    var heightUpdateFunction = function() {
+    var heightUpdateFunction = function () {
       // http://stackoverflow.com/questions/11584061/
       var newHeight =
         editor.getSession().getScreenLength() * editor.renderer.lineHeight +
@@ -269,11 +264,11 @@ var AppEngineConsoleFix = function() {
     var form = submit_button.closest('form');
 
     //Needed to prevent stale values being submitted in localhost
-    submit_button.click(function(event) {
+    submit_button.click(function (event) {
       textarea.val(editor.getSession().getValue());
     });
 
-    form.submit(function(event) {
+    form.submit(function (event) {
       self.saveHistory(self.codearea.getValue(), self.namespace);
       function codeSubmit() {
         $('#output').text('...');
@@ -303,7 +298,7 @@ var AppEngineConsoleFix = function() {
           type: 'POST',
           data: data,
         })
-          .done(function(data, textStatus, jqXHR) {
+          .done(function (data, textStatus, jqXHR) {
             if (self.in_localhost) {
               $('#output').text(data);
             } else if (self.in_appspot_console) {
@@ -323,7 +318,7 @@ var AppEngineConsoleFix = function() {
 
             self.enableExecuteButton();
           })
-          .fail(function(xhr, textStatus, errorThrown) {
+          .fail(function (xhr, textStatus, errorThrown) {
             if (self.in_localhost) {
               $('#output').text('Request failed');
             } else if (self.in_appspot_console) {
@@ -331,7 +326,7 @@ var AppEngineConsoleFix = function() {
             }
             self.enableExecuteButton();
           })
-          .always(function() {
+          .always(function () {
             self.stopUpdatingExecutionTimer();
           });
         return false;
@@ -348,15 +343,21 @@ var AppEngineConsoleFix = function() {
 
   self.namespace = self.getNamespace();
 
-  $('document').ready(function() {
+  $('document').ready(function () {
+    function inIframe() {
+      try {
+        return window.self !== window.top;
+      } catch (e) {
+        return true;
+      }
+    }
+
     //We don't want to run in the output iframe.
-    self.in_localhost = window.name === '' && $('iframe').length == 0;
+    self.in_localhost = !inIframe() && window.location.hostname === 'localhost';
     self.in_appspot_console =
-      window.name === '' && $('iframe[name="output"]').length != 0;
+      !inIframe() && window.location.hostname.endsWith('.appspot.com');
     self.in_appengine_console =
-      window.name === '' &&
-      $('iframe').length != 0 &&
-      $('iframe[name="output"]').length == 0;
+      !inIframe() && window.location.hostname === 'appengine.google.com';
 
     if (self.in_localhost) {
       var elt = document.createElement('script');
