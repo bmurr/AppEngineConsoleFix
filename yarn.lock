@@ -2868,6 +2868,11 @@ fastparse@^1.1.2:
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.2.tgz#91728c5a5942eced8531283c79441ee4122c35a9"
   integrity sha512-483XLLxTVIwWK3QTrMGRqUfUpoOs/0hbQrl2oz4J0pAcm3A3bu84wxTFqGqkJzewCLdME38xJLJAxBABfQT8sQ==
 
+favicon.js@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/favicon.js/-/favicon.js-1.0.0.tgz#4700ece0404b72127cb35f297b6487f5609d2a9b"
+  integrity sha512-wxSFFH4I1nvCSZVzxOpWYonMMBB1SWMwlJt6PoDtW1cDh887o/fwRKrHUrjbLQQusvbxs4k03nuKbNe3q1FD/Q==
+
 faye-websocket@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.10.0.tgz#4e492f8d04dfb6f89003507f6edbf2d501e7c6f4"

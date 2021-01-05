@@ -4,9 +4,18 @@ import 'brace/mode/json';
 import 'brace/theme/eclipse';
 import 'brace/ext/language_tools';
 
+import favicon, * as FaviconJs from 'favicon.js';
 import $ from 'jquery';
 import moment from 'moment';
 import 'font-awesome/css/font-awesome.css';
+
+import {
+  fetchFaviconSrc,
+  TERMINAL,
+  TERMINAL_NOTIFICATION,
+  TERMINAL_FRAMES,
+  TRANSPARENT_SQUARE48,
+} from './favicons.js';
 
 var AppEngineConsoleFix = function () {
   var self = this;
@@ -14,6 +23,7 @@ var AppEngineConsoleFix = function () {
 
   window.chrome = chrome;
   self.timers = {};
+  self.favicons = {};
 
   self.getInputArea = function () {
     return $('#code')[0] || $('#code_text')[0];
@@ -82,6 +92,7 @@ var AppEngineConsoleFix = function () {
   };
 
   self.startUpdatingExecutionTimer = function () {
+    AppEngineConsoleFix.changeFavicon('WORKING');
     self.timers.executionInterval = window.setInterval(() => {
       let timeElapsed = new Date() - self.timers.lastExecutedAt;
       self.timers.timeElapsed = timeElapsed;
@@ -112,6 +123,16 @@ var AppEngineConsoleFix = function () {
   };
 
   self.stopUpdatingExecutionTimer = function () {
+    let focusHandler = () => {
+      AppEngineConsoleFix.changeFavicon('BASE');
+      window.removeEventListener('focus', focusHandler);
+    };
+    if (!document.hasFocus()) {
+      AppEngineConsoleFix.changeFavicon('NOTIFICATION');
+      window.addEventListener('focus', focusHandler);
+    } else {
+      AppEngineConsoleFix.changeFavicon('BASE');
+    }
     window.clearInterval(self.timers.executionInterval);
     let timeElapsed = new Date() - self.timers.lastExecutedAt;
     self.timers.timeElapsed = timeElapsed;
@@ -128,6 +149,108 @@ var AppEngineConsoleFix = function () {
   self.disableExecuteButton = function () {
     $('#execute_button').attr('disabled', 'disabled');
     $('#execute_button').addClass('disabled');
+  };
+
+  AppEngineConsoleFix.changeFavicon = function (faviconState) {
+    // Base icon in general to show console (add to existing)
+    // Icon in working state animation
+    // Icon in notification state (until checked)
+
+    faviconState = faviconState || 'BASE';
+
+    let drawBaseFavicon = (canvas, imgSrc) =>
+      new Promise((resolve, reject) => {
+        let img = new Image();
+        let context = canvas.getContext('2d');
+        img.onload = function () {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          context.drawImage(img, 0, 0);
+          resolve();
+        };
+        img.src = imgSrc;
+      });
+
+    let drawTerminalFrame = (canvas, frameSvg) =>
+      new Promise((resolve, reject) => {
+        let terminalB64 = btoa(frameSvg);
+        let b64Start = 'data:image/svg+xml;base64,';
+        let img = new Image();
+        let context = canvas.getContext('2d');
+        img.onload = function () {
+          let terminalY = canvas.height - img.height;
+          let terminalX = canvas.width - img.width;
+          context.drawImage(img, terminalX, terminalY);
+          resolve();
+        };
+        img.src = b64Start + terminalB64;
+      });
+
+    let makeFavicon = (faviconState) =>
+      new Promise((resolve, reject) => {
+        fetchFaviconSrc(document, window.location.origin).then((faviconUrl) => {
+          let baseFavicon =
+            faviconUrl === undefined ? TRANSPARENT_SQUARE48 : faviconUrl;
+
+          if (faviconState === 'BASE') {
+            let canvas = document.createElement('canvas');
+            let faviconB64Frames = [];
+            drawBaseFavicon(canvas, baseFavicon)
+              .then(() => drawTerminalFrame(canvas, TERMINAL))
+              .then(() => {
+                faviconB64Frames.push(canvas.toDataURL());
+                resolve(faviconB64Frames);
+              });
+          } else if (faviconState === 'WORKING') {
+            let promises = [];
+            for (let TERMINAL_FRAME of TERMINAL_FRAMES) {
+              promises.push(
+                new Promise((resolve, reject) => {
+                  let canvas = document.createElement('canvas');
+                  let context = canvas.getContext('2d');
+                  drawBaseFavicon(canvas, baseFavicon)
+                    .then(() => drawTerminalFrame(canvas, TERMINAL_FRAME))
+                    .then(() => {
+                      resolve(canvas.toDataURL());
+                    });
+                })
+              );
+            }
+            Promise.all(promises).then((faviconB64Frames) =>
+              resolve(faviconB64Frames)
+            );
+          } else if (faviconState === 'NOTIFICATION') {
+            let canvas = document.createElement('canvas');
+            let faviconB64Frames = [];
+            drawBaseFavicon(canvas, baseFavicon)
+              .then(() => drawTerminalFrame(canvas, TERMINAL_NOTIFICATION))
+              .then(() => {
+                faviconB64Frames.push(canvas.toDataURL());
+                resolve(faviconB64Frames);
+              });
+          } else {
+            throw new Error(`Unrecognized favicon state: ${faviconState}`);
+          }
+        });
+      });
+
+    let getFavicon = (faviconState) =>
+      new Promise((resolve, reject) => {
+        let favicon = self.favicons[faviconState];
+        if (favicon) {
+          resolve(favicon);
+        } else {
+          makeFavicon(faviconState).then((result) => {
+            self.favicons[faviconState] = result;
+            resolve(result);
+          });
+        }
+      });
+
+    // FaviconJs.defaultPause = 100;
+    getFavicon(faviconState).then((faviconB64Frames) => {
+      FaviconJs.animate(faviconB64Frames, 100);
+    });
   };
 
   AppEngineConsoleFix.editTable = function () {
@@ -366,6 +489,7 @@ var AppEngineConsoleFix = function () {
     }
 
     if (window.name.indexOf('output') === -1 && !self.in_appengine_console) {
+      AppEngineConsoleFix.changeFavicon();
       AppEngineConsoleFix.editTable();
       AppEngineConsoleFix.createCodeArea();
     }
