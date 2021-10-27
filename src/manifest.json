@@ -3,8 +3,8 @@
     "description": "Makes the AppEngine Interactive Console more usable.",
 
     "manifest_version": 2,
-    "version": "1.2.1",
-    "version_name": "1.2.1-dev",
+    "version": "1.2.2",
+    "version_name": "1.2.2-dev",
 
     "permissions": ["storage", "unlimitedStorage"],
 
