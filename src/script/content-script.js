@@ -24,6 +24,7 @@ var AppEngineConsoleFix = function () {
   window.chrome = chrome;
   self.timers = {};
   self.favicons = {};
+  self.outputStyles = { whiteSpace: 'pre' };
 
   self.getInputArea = function () {
     return $('#code')[0] || $('#code_text')[0];
@@ -149,6 +150,18 @@ var AppEngineConsoleFix = function () {
   self.disableExecuteButton = function () {
     $('#execute_button').attr('disabled', 'disabled');
     $('#execute_button').addClass('disabled');
+  };
+
+  self.applyOutputStyles = function () {
+    window.setTimeout(function () {
+      let outputElem = document.getElementById('output');
+      if (outputElem.contentDocument) {
+        outputElem = outputElem.contentDocument.getElementById('output');
+      }
+      for (let [styleName, styleValue] of Object.entries(self.outputStyles)) {
+        outputElem.style[styleName] = styleValue;
+      }
+    }, 100);
   };
 
   AppEngineConsoleFix.changeFavicon = function (faviconState) {
@@ -384,6 +397,26 @@ var AppEngineConsoleFix = function () {
       </div>`
     ).insertAfter(submit_button);
 
+    $('.executionRow').append(
+      `
+      <div class="controls">
+        <label>Word-wrap
+            <input type="checkbox" name="wrap-output" />
+        </label>
+      </div>
+      `
+    );
+
+    $('.executionRow .controls input[name="wrap-output"]').change(function () {
+      if (this.checked) {
+        self.outputStyles['whiteSpace'] = 'pre-wrap';
+        self.applyOutputStyles();
+      } else {
+        self.outputStyles['whiteSpace'] = 'pre';
+        self.applyOutputStyles();
+      }
+    });
+
     var form = submit_button.closest('form');
 
     //Needed to prevent stale values being submitted in localhost
@@ -450,6 +483,7 @@ var AppEngineConsoleFix = function () {
             self.enableExecuteButton();
           })
           .always(function () {
+            self.applyOutputStyles();
             self.stopUpdatingExecutionTimer();
           });
         return false;

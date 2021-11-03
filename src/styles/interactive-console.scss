@@ -82,13 +82,24 @@
 
 .executionRow {
     display: flex;
+    font-size: 11px;
+
+    .controls {
+        label {
+            user-select: none;
+        }
+
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex: 1;
+    }
 }
 
 .executionDetails {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 11px;
     color: #777;
     margin-left: 10px;
 
