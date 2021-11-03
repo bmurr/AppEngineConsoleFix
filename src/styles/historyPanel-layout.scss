@@ -1,70 +1,66 @@
 $main-container-background-color: #ffffff;
 
-.main-container{
+.main-container {
   display: flex;
   flex-direction: column;
   background-color: $main-container-background-color;
   height: 100%;
-  
-  .header{
+
+  .header {
     flex: 0 1;
   }
-  
-  .panel-container{
+
+  .panel-container {
+    height: calc(100% - 22px);
     display: flex;
     flex-direction: row;
     flex: 1 0;
   }
-  
-  .panel{
+
+  .panel {
     display: flex;
     flex-direction: column;
     flex: 1 0;
     height: 100%;
-    overflow: hidden;    
+    overflow: hidden;
   }
-  
-  .footer{
+
+  .footer {
     background-color: #eee;
     border-top: 1px solid #ccc;
     flex: 0 1;
     line-height: 18px;
-    padding:0 5px;
+    padding: 0 5px;
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    .footer-content{
+    .footer-content {
       display: flex;
       justify-content: space-between;
-
     }
-
-
   }
-  
-  .search-bar{    
+
+  .search-bar {
     display: flex;
     width: 100%;
   }
 
-  .search-bar{
+  .search-bar {
     width: 100%;
     padding: 5px;
     display: flex;
     background-color: #eee;
     border-top: 1px solid #ddd;
-    z-index: 999;    
+    z-index: 999;
 
     input {
       flex: 1 1 auto;
       border: 1px solid #ccc;
 
-      &:focus{
+      &:focus {
         outline: none;
         border: 1px solid #68d;
       }
     }
-}
-
-
+  }
 }

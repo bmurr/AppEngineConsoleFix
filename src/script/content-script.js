@@ -518,7 +518,10 @@ var AppEngineConsoleFix = function () {
 
     if (self.in_localhost) {
       var elt = document.createElement('script');
-      elt.innerHTML = `jQuery('#console-form').off('submit')`;
+      elt.setAttribute(
+        'src',
+        'chrome-extension://lickplgkkppdanbcigejmkconmpcmien/script/inline-script.js'
+      );
       document.head.appendChild(elt);
     }
 

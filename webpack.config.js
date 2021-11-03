@@ -6,45 +6,45 @@ var gulpConfig = require('./gulp.config.js');
 
 module.exports = {
   cache: true,
-  
+
   entry: {
     'content-script': ['script/content-script.js'],
     'event-page': ['script/event-page.js'],
-    main: ['script/main.js']
+    main: ['script/main.js'],
+    'inline-script': ['script/inline-script.js'],
   },
   output: {
-    filename: 'script/[name].js'    
+    filename: 'script/[name].js',
   },
   module: {
     loaders: [
       {
         test: /\.(js|jsx)$/,
-        include: [ path.join(__dirname, gulpConfig.srcDirectory) ],
+        include: [path.join(__dirname, gulpConfig.srcDirectory)],
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'stage-2', 'react']
-        }
+          presets: ['es2015', 'stage-2', 'react'],
+        },
       },
       {
         test: /\.scss$/,
-        include: [ path.join(__dirname, gulpConfig.srcDirectory) ],
+        include: [path.join(__dirname, gulpConfig.srcDirectory)],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           //resolve-url-loader may be chained before sass-loader if necessary
-          use: ['css-loader', 'sass-loader']
-        })      
+          use: ['css-loader', 'sass-loader'],
+        }),
       },
       {
         test: /\.css$/,
-        exclude: [ path.join(__dirname, gulpConfig.srcDirectory) ],
-        use: ['style-loader', 'css-loader']
-      }   
-    ]
+        exclude: [path.join(__dirname, gulpConfig.srcDirectory)],
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
   },
   resolve: {
-    modules: [path.resolve(__dirname, 'src'), 'node_modules']
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
   },
-
 
   plugins: [
     // new webpack.optimize.CommonsChunkPlugin({
@@ -53,11 +53,15 @@ module.exports = {
     //   minChunks: Infinity
     // }),
     new ExtractTextPlugin({
-      filename: 'styles/style.css'
+      filename: 'styles/style.css',
     }),
-    new webpack.DllReferencePlugin({      
-      context: path.join(__dirname, gulpConfig.srcDirectory),    
-      manifest: require(path.join(__dirname, gulpConfig.vendorDirectory, 'vendor-manifest.json'))      
-    })
-  ]
+    new webpack.DllReferencePlugin({
+      context: path.join(__dirname, gulpConfig.srcDirectory),
+      manifest: require(path.join(
+        __dirname,
+        gulpConfig.vendorDirectory,
+        'vendor-manifest.json'
+      )),
+    }),
+  ],
 };
